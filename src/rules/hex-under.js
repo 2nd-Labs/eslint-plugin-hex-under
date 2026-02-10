@@ -1,7 +1,7 @@
 module.exports = {
   meta: {
     type: "suggestion",
-    version: "0.2.6",
+    version: "0.3.0",
     defaultOptions: [
       {
         limit: 255,
@@ -52,7 +52,7 @@ module.exports = {
                 overValue: value,
               },
               fix(fixer) {
-                return fixer.replaceText(token, value);
+                return fixer.replaceText(token, String(value));
               },
             });
           }
