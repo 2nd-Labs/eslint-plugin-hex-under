@@ -1,7 +1,5 @@
 # eslint-plugin-hex-under
 
-!!! WARNING: This plugin only works with `eslint` prior v10.0.0
-
 Sometimes it's really hard for humans to read hexadecimal numbers and know the exact decimal value.
 
 ## hex-under

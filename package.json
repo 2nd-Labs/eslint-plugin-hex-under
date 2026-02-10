@@ -17,7 +17,7 @@
   "license": "MIT",
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
   "devDependencies": {
-    "eslint": "9.20.1",
-    "prettier": "3.5.1"
+    "eslint": "10.0.0",
+    "prettier": "3.8.1"
   }
 }
