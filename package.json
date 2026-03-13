@@ -1,12 +1,13 @@
 {
   "name": "eslint-plugin-hex-under",
   "version": "0.5.2",
+  "type": "module",
   "main": "src/eslint-plugin-hex-under.js",
   "scripts": {
     "lint": "prettier . --check && eslint .",
-    "test": "npm run test:hex-under && npm run test:bigint",
-    "test:hex-under": "node test/hex-under.test.js",
-    "test:bigint": "node test/hex-under-bigint.test.js"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "repository": {
     "type": "git",
@@ -17,8 +18,11 @@
   "license": "MIT",
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
   "devDependencies": {
+    "@vitest/coverage-v8": "4.1.0",
     "eslint": "10.0.3",
-    "prettier": "3.8.1"
+    "prettier": "3.8.1",
+    "tinyexec": "1.0.4",
+    "vitest": "4.1.0"
   },
   "peerDependencies": {
     "eslint": "^10.0.0"

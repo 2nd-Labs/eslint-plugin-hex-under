@@ -1,4 +1,4 @@
-module.exports = {
+export default {
   meta: {
     type: "suggestion",
     version: "0.3.0",

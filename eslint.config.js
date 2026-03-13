@@ -1,11 +1,11 @@
 "use strict";
 
-const eslintPluginHexUnder = require("./src/eslint-plugin-hex-under");
+import plugin from "./src/eslint-plugin-hex-under.js";
 
-module.exports = [
+export default [
   {
     plugins: {
-      "hex-under": eslintPluginHexUnder,
+      "hex-under": plugin,
     },
     rules: {
       "hex-under/hex-under": ["error", { limit: 255 }],

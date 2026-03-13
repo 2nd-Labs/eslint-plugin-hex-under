@@ -1,9 +1,11 @@
-const hexUnderRule = require("./rules/hex-under");
-const hexUnderBigintRule = require("./rules/hex-under-bigint");
+import hexUnderRule from "./rules/hex-under.js";
+import hexUnderBigintRule from "./rules/hex-under-bigint.js";
+
 const plugin = {
   rules: {
     "hex-under": hexUnderRule,
     "hex-under-bigint": hexUnderBigintRule,
   },
 };
-module.exports = plugin;
+
+export default plugin;

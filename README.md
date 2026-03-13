@@ -2,6 +2,23 @@
 
 Sometimes it's really hard for humans to read hexadecimal numbers and know the exact decimal value.
 
+## Testing & Code Coverage
+
+This project uses **Vitest** as its test runner with comprehensive code coverage tracking. All tests are written using Vitest's modern testing framework and ESLint's RuleTester for validating rule behavior.
+
+### Running Tests
+
+```sh
+# Run all tests once
+npm run test
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Run tests with coverage report
+npm run coverage
+```
+
 ## hex-under
 
 This ESLint plugin proves, if you use hexadecimal numbers in your code, that its value is less than or equal a specified value (default: 255). If you use a hexadecimal number greater than this specified value, it will be transformed to its decimal value.
