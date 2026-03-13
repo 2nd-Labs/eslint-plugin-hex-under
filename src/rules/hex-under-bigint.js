@@ -1,7 +1,7 @@
-module.exports = {
+export default {
   meta: {
     type: "suggestion",
-    version: "0.0.1",
+    version: "0.0.2",
     defaultOptions: [
       {
         limit: 255,
