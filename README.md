@@ -46,9 +46,9 @@ npm install --save-dev eslint-plugin-hex-under
 ```js
 // eslint.config.js
 
-const eslintPluginHexUnder = require("eslint-plugin-hex-under");
+import eslintPluginHexUnder from "eslint-plugin-hex-under";
 
-module.exports = [
+export default [
   {
     files: ["*.js"],
     plugins: {
@@ -68,9 +68,9 @@ There is a similar rule to prove for BigInteger hexadecimal numbers. You can ena
 ```js
 // eslint.config.js
 
-const eslintPluginHexUnder = require("eslint-plugin-hex-under");
+import eslintPluginHexUnder from "eslint-plugin-hex-under";
 
-module.exports = [
+export default = [
   {
     files: ["*.js"],
     plugins: {
