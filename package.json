@@ -21,6 +21,6 @@
     "prettier": "3.8.1"
   },
   "peerDependencies": {
-    "eslint": "10.0.0"
+    "eslint": "^10.0.0"
   }
 }
