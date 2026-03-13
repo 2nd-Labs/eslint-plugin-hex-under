@@ -18,7 +18,7 @@ module.exports = {
         properties: {
           limit: {
             type: "integer",
-            minimum: 1,
+            minimum: 0,
           },
         },
         additionalProperties: false,
@@ -30,28 +30,42 @@ module.exports = {
     },
   },
   create(context) {
-    const limit = context.options[0]?.limit;
+    const options = context.options[0] || {};
+    const limit = typeof options.limit === "number" ? options.limit : 255;
+
     return {
       onCodePathEnd: function (_codePath, node) {
         const tokens =
           node.tokens?.filter(
             (token) =>
-              ["Numeric", "Identifier"].some((el) => el === token.type) &&
+              ["Numeric", "Identifier"].includes(token.type) &&
+              typeof token.value === "string" &&
               token.value.startsWith("0x") &&
               token.value.endsWith("n"),
           ) || [];
+
         for (const token of tokens) {
-          const value = parseInt(token.value);
-          if (value > limit) {
-            context.report({
-              node: token,
-              messageId: "valueOverGeneralBigInt",
-              data: {
-                limit: limit,
-                over255Raw: token.value,
-                overValue: value,
-              },
-            });
+          try {
+            const hexValue = token.value.slice(0, -1);
+            const value = BigInt(hexValue);
+            const limitBigInt = BigInt(limit);
+
+            if (value > limitBigInt) {
+              context.report({
+                node: token,
+                messageId: "valueOverGeneralBigInt",
+                data: {
+                  limit: limit,
+                  over255Raw: token.value,
+                  overValue: value.toString(),
+                },
+                fix(fixer) {
+                  return fixer.replaceText(token, value.toString() + "n");
+                },
+              });
+            }
+          } catch {
+            continue;
           }
         }
       },
