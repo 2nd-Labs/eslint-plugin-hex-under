@@ -42,6 +42,19 @@ ruleTester.run("hex-under-bigint", hexUnderBigintRule, {
   invalid: [
     {
       code: "const foo = 0x100n;",
+      output: "const foo = 256n;",
+      errors: 1,
+    },
+    {
+      code: "let bar = 0x1ffn;",
+      output: "let bar = 511n;",
+      options: [{ limit: 300 }],
+      errors: 1,
+    },
+    {
+      code: "const big = 0x12345n;",
+      output: "const big = 74565n;",
+      options: [{ limit: 70000 }],
       errors: 1,
     },
   ],

@@ -64,7 +64,6 @@ module.exports = [
 #### Experimental BigInteger Support
 
 There is a similar rule to prove for BigInteger hexadecimal numbers. You can enable it similar to the `hex-under` rule. The default limit is 255.
-At the moment these found issues are not automatically fixable.
 
 ```js
 // eslint.config.js
