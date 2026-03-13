@@ -1,4 +1,6 @@
-eslint.config.js
-.github/
-fixture/
-test/
+*
+
+!src/
+!README.md
+!LICENSE
+!package.json
