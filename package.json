@@ -20,7 +20,7 @@
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
   "devDependencies": {
     "@vitest/coverage-v8": "4.1.0",
-    "bats": "^1.13.0",
+    "bats": "1.13.0",
     "eslint": "10.0.3",
     "prettier": "3.8.1",
     "tinyexec": "1.0.4",
