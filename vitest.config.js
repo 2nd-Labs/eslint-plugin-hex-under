@@ -15,6 +15,12 @@ export default defineConfig({
       statements: 80,
       skipFull: false,
       all: true,
+      thresholds: {
+        lines: 85,
+        functions: 90,
+        branches: 75,
+        statements: 85,
+      },
     },
     globals: false,
   },
