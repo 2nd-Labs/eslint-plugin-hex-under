@@ -13,8 +13,6 @@ run_fixture() {
   local fixture_name
   fixture_name=$(basename "$fixture" .js)
 
-  echo "Testing fixture: $fixture_name"
-
   cp "$fixture" tmp/input.js
 
   run npx eslint --fix tmp/input.js
