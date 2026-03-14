@@ -30,22 +30,22 @@ run_fixture() {
   }
 }
 
-@test "fixture: no-var" {
+@test "fixture: example.js" {
   run_fixture "$BATS_TEST_DIRNAME/../fixture/example.js"
 }
 
-@test "fixture: arrow-spacing" {
+@test "fixture: example2.js" {
   run_fixture "$BATS_TEST_DIRNAME/../fixture/example2.js"
 }
 
-@test "fixture: semi" {
+@test "fixture: example3.js" {
   run_fixture "$BATS_TEST_DIRNAME/../fixture/example3.js"
 }
 
-@test "fixture: semi" {
+@test "fixture: example4.js" {
   run_fixture "$BATS_TEST_DIRNAME/../fixture/example4.js"
 }
 
-@test "fixture: semi" {
+@test "fixture: example5.js" {
   run_fixture "$BATS_TEST_DIRNAME/../fixture/example5.js"
 }
