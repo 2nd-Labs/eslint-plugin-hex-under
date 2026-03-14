@@ -4,18 +4,24 @@
   "type": "module",
   "main": "src/eslint-plugin-hex-under.js",
   "scripts": {
+    "coverage": "vitest run --coverage",
     "lint": "prettier . --check && eslint .",
     "test": "vitest run",
     "test:all": "npm run test && npm run test:bats",
     "test:bats": "bats test/*.bats",
-    "test:watch": "vitest",
-    "coverage": "vitest run --coverage"
+    "test:watch": "vitest"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/0xflotus/eslint-plugin-hex-under.git"
-  },
-  "keywords": [],
+  "repository": "github:0xflotus/eslint-plugin-hex-under"
+  "keywords": [
+    "eslint",
+    "eslint-plugin",
+    "lint",
+    "hex",
+    "static-analysis"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
   "author": "0xflotus",
   "license": "MIT",
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
