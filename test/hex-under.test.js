@@ -39,6 +39,12 @@ describe("hex-under", () => {
         {
           code: "const func = () => 0xab;",
         },
+        {
+          code: "const str = '0x100';",
+        },
+        {
+          code: "`value: 0x100`",
+        },
       ],
       invalid: [
         {
@@ -69,6 +75,41 @@ describe("hex-under", () => {
         {
           code: "const func = () => 0xabc;",
           output: "const func = () => 2748;",
+          errors: 1,
+        },
+        {
+          code: "const foo = 0xABC;",
+          output: "const foo = 2748;",
+          errors: 1,
+        },
+        {
+          code: "const foo = -0x100;",
+          output: "const foo = -256;",
+          errors: 1,
+        },
+        {
+          code: "if (0x100 > 5) {}",
+          output: "if (256 > 5) {}",
+          errors: 1,
+        },
+        {
+          code: "const arr = [0x100];",
+          output: "const arr = [256];",
+          errors: 1,
+        },
+        {
+          code: "const obj = { a: 0x100 };",
+          output: "const obj = { a: 256 };",
+          errors: 1,
+        },
+        {
+          code: "const a = 0x100; const b = 0x200;",
+          output: "const a = 256; const b = 512;",
+          errors: 2,
+        },
+        {
+          code: "const foo = 0x1_00;",
+          output: "const foo = 256;",
           errors: 1,
         },
       ],
