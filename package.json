@@ -6,7 +6,8 @@
   "scripts": {
     "lint": "prettier . --check && eslint .",
     "test": "vitest run",
-    "test:bats": "bats bats/*.bats",
+    "test:all": "npm run test && npm run test:bats",
+    "test:bats": "bats test/*.bats",
     "test:watch": "vitest",
     "coverage": "vitest run --coverage"
   },

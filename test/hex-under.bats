@@ -9,7 +9,7 @@ teardown() {
   rm -rf tmp
 }
 
-@test "eslint --fix wandelt Hexadezimalzahlen korrekt um" {
+@test "eslint --fix fixes the code correctly" {
   run npx eslint --fix tmp/input.js
   [ "$status" -eq 0 ]
   diff tmp/input.js "$BATS_TEST_DIRNAME/../fixture/example.fixed.js" || {
