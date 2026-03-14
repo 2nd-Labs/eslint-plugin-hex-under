@@ -86,11 +86,15 @@ export default = [
 ## Testing & Code Coverage
 
 This project uses **Vitest** as its test runner with comprehensive code coverage tracking. All tests are written using Vitest's modern testing framework and ESLint's RuleTester for validating rule behavior.
+Additionally this project uses bats to test the `eslint --fix` command's output.
 
 ### Running Tests
 
 ```sh
 # Run all tests once
+npm run test:all
+
+# Run vitest tests
 npm run test
 
 # Run tests in watch mode (for development)
@@ -98,4 +102,7 @@ npm run test:watch
 
 # Run tests with coverage report
 npm run coverage
+
+# Run bats tests
+npm run test:bats
 ```
