@@ -2,21 +2,27 @@
 
 setup() {
   mkdir -p tmp
-  cp "$BATS_TEST_DIRNAME/../fixture/example.js" tmp/input.js
 }
 
 teardown() {
   rm -rf tmp
 }
 
-@test "eslint --fix fixes the code correctly" {
-  run npx eslint --fix tmp/input.js
-  [ "$status" -eq 0 ]
-  diff tmp/input.js "$BATS_TEST_DIRNAME/../fixture/example.fixed.js" || {
-    echo "Expected:"
-    cat "$BATS_TEST_DIRNAME/../fixture/example.fixed.js"
-    echo "Got:"
-    cat tmp/input.js
-    return 1
+for fixture in "$BATS_TEST_DIRNAME/../fixture/"*.js; do
+  [[ "$fixture" == *.fixed.js ]] && continue
+
+  fixture_name=$(basename "$fixture" .js)
+
+  @test "eslint --fix fixes $fixture_name correctly" {
+    cp "$fixture" tmp/input.js
+    run npx eslint --fix tmp/input.js
+    [ "$status" -eq 0 ]
+    diff tmp/input.js "$BATS_TEST_DIRNAME/../fixture/${fixture_name}.fixed.js" || {
+      echo "Expected:"
+      cat "$BATS_TEST_DIRNAME/../fixture/${fixture_name}.fixed.js"
+      echo "Got:"
+      cat tmp/input.js
+      return 1
+    }
   }
-}
+done
