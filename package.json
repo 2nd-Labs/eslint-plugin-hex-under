@@ -11,7 +11,7 @@
     "test:bats": "bats test/*.bats",
     "test:watch": "vitest"
   },
-  "repository": "github:0xflotus/eslint-plugin-hex-under"
+  "repository": "github:0xflotus/eslint-plugin-hex-under",
   "keywords": [
     "eslint",
     "eslint-plugin",
@@ -21,7 +21,7 @@
   ],
   "engines": {
     "node": ">=22"
-  }
+  },
   "author": "0xflotus",
   "license": "MIT",
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
