@@ -1,4 +1,4 @@
 const a = 0x1;
 const b = 0x100;
-const c = 0xFF;
+const c = 0xff;
 const d = 0x200n;

@@ -1,1 +1,1 @@
-const total = 0x10 + 0x1F + 768;
+const total = 0x10 + 0x1f + 768;
