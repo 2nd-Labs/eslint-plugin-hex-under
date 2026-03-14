@@ -1,6 +1,6 @@
 const obj = {
-  small: 0x0A,
-  medium: 0xFF,
+  small: 0x0a,
+  medium: 0xff,
   large: 291,
   bigIntSmall: 254n,
   bigIntLarge: 291n,
