@@ -4,28 +4,38 @@ on:
   push:
     branches: [main]
     paths:
-      - "src/**"
-      - "package*.json"
-      - ".github/**/*.yml"
-      - "test/**"
-      - "fixture/**"
-      - "*.config.js"
+      - 'src/**'
+      - 'package*.json'
+      - '.github/**/*.yml'
+      - 'test/**'
+      - 'fixture/**'
+      - '*.config.js'
 
   pull_request:
     branches: [main]
     paths:
-      - "src/**"
-      - "package*.json"
-      - ".github/**/*.yml"
-      - "test/**"
-      - "fixture/**"
-      - "*.config.js"
+      - 'src/**'
+      - 'package*.json'
+      - '.github/**/*.yml'
+      - 'test/**'
+      - 'fixture/**'
+      - '*.config.js'
 
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
+  prettier:
+    runs-on: ubuntu-slim
+    continue-on-error: true
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Prettify code
+        uses: creyD/prettier_action@v4.6
+        with:
+          dry: True
   audit:
     runs-on: ubuntu-slim
     steps:
