@@ -19,10 +19,10 @@ run_fixture() {
   [ "$status" -eq 0 ]
 
   diff tmp/input.js "$BATS_TEST_DIRNAME/../fixture/${fixture_name}.fixed.js" || {
-    echo "Fixture failed: $fixture_name"
-    echo "Expected:"
+    echo -e "\nFixture failed: $fixture_name"
+    echo -e "\nExpected:"
     cat "$BATS_TEST_DIRNAME/../fixture/${fixture_name}.fixed.js"
-    echo "Got:"
+    echo -e "\nGot:"
     cat tmp/input.js
     return 1
   }
