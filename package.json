@@ -8,7 +8,7 @@
     "lint": "prettier . --check && eslint .",
     "test": "vitest run",
     "test:all": "npm run test && npm run test:bats",
-    "test:bats": "bats test/*.bats",
+    "test:bats": "bats --print-output-on-failure test/*.bats",
     "test:watch": "vitest"
   },
   "repository": "github:0xflotus/eslint-plugin-hex-under",
@@ -26,6 +26,7 @@
   "license": "MIT",
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
   "devDependencies": {
+    "@eslint/js": "10.0.1",
     "@vitest/coverage-v8": "4.1.0",
     "bats": "1.13.0",
     "eslint": "10.0.3",
