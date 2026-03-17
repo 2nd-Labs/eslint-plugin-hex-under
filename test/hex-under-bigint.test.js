@@ -1,17 +1,17 @@
 import { describe, it } from 'vitest';
 import { RuleTester } from 'eslint';
-import hexUnderBigintRule from '../src/rules/hex-under-bigint.js';
+import hexUnderBigintRule from '../src/rules/hex-under.js';
 
 describe('hex-under-bigint', () => {
   const ruleTester = new RuleTester({
     languageOptions: {
-      ecmaVersion: 2022,
+      ecmaVersion: 2025,
     },
   });
 
   describe('valid cases - under limit', () => {
     it('allows hex bigint under limit (255)', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 255 }],
@@ -23,7 +23,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows hex bigint under small limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 15 }],
@@ -35,7 +35,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows hex bigint exactly at limit boundary', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 256 }],
@@ -49,7 +49,7 @@ describe('hex-under-bigint', () => {
 
   describe('valid cases - different declarations', () => {
     it('allows const declaration', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 255 }],
@@ -61,7 +61,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows let declaration', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 255 }],
@@ -73,7 +73,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows var declaration', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 256 }],
@@ -87,7 +87,7 @@ describe('hex-under-bigint', () => {
 
   describe('valid cases - usage contexts', () => {
     it('allows bigint inside function return', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             code: 'function func() {\n  return 0xffn;\n}',
@@ -98,7 +98,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows bigint as function argument', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             code: 'functionA(0xefn);',
@@ -109,7 +109,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows bigint in arrow function', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             code: 'const func = () => 0xabn;',
@@ -122,7 +122,7 @@ describe('hex-under-bigint', () => {
 
   describe('valid cases - hex format variations', () => {
     it('allows uppercase hex bigint under limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 3000 }],
@@ -134,7 +134,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows mixed case hex bigint under limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 3000 }],
@@ -146,7 +146,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows hex bigint with numeric separators under limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
             options: [{ limit: 3000 }],
@@ -160,7 +160,7 @@ describe('hex-under-bigint', () => {
 
   describe('invalid cases - exceeds limit', () => {
     it('converts hex bigint over default limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
           {
@@ -173,7 +173,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts hex bigint over custom limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
           {
@@ -187,7 +187,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts large hex bigint', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
           {
@@ -203,7 +203,7 @@ describe('hex-under-bigint', () => {
 
   describe('invalid cases - hex format variations', () => {
     it('converts uppercase hex bigint over limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
           {
@@ -217,7 +217,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts mixed case hex bigint over limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
           {
@@ -231,7 +231,7 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts hex bigint with numeric separators over limit', () => {
-      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
           {

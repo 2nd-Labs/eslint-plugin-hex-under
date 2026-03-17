@@ -14,7 +14,6 @@ export default [
     },
     rules: {
       'hex-under/hex-under': ['error', { limit: 255 }],
-      'hex-under/hex-under-bigint': ['error'],
     },
   },
 ];

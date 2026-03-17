@@ -62,3 +62,7 @@ run_fixture() {
 @test "fixture: example7.js" {
   run_fixture "$BATS_TEST_DIRNAME/../fixture/example7.js"
 }
+
+@test "fixture: example8.js" {
+  run_fixture "$BATS_TEST_DIRNAME/../fixture/example8.js"
+}

@@ -27,6 +27,8 @@ function add(a, b) {
   return a + b + 0x100;
 }
 
+let d = 0xaa_ffn;
+
 // This can be transformed to:
 const signal = 539;
 
@@ -35,6 +37,8 @@ let func = () => 2748;
 function add(a, b) {
   return a + b + 256;
 }
+
+let d = 43775;
 ```
 
 ## Integration
@@ -56,28 +60,6 @@ export default [
     },
     rules: {
       'hex-under/hex-under': ['error', { limit: 255 }],
-    },
-  },
-];
-```
-
-#### Experimental BigInteger Support
-
-There is a similar rule to prove for BigInteger hexadecimal numbers. You can enable it similar to the `hex-under` rule. The default limit is 255.
-
-```js
-// eslint.config.js
-
-import eslintPluginHexUnder from "eslint-plugin-hex-under";
-
-export default = [
-  {
-    files: ["*.js"],
-    plugins: {
-      "hex-under": eslintPluginHexUnder,
-    },
-    rules: {
-      "hex-under/hex-under-bigint": "warn",
     },
   },
 ];

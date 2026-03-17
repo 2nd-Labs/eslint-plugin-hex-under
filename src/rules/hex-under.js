@@ -1,7 +1,7 @@
 export default {
   meta: {
     type: 'suggestion',
-    version: '0.4.0',
+    version: '0.5.0',
     defaultOptions: [
       {
         limit: 255,
@@ -32,22 +32,33 @@ export default {
   },
 
   create(context) {
-    const { limit = 255 } = context.options[0] ?? {};
-    const HEX_REGEX = /^0[Xx][0-9a-fA-F_]+$/;
+    const [{ limit = 255 } = {}] = context.options;
+    const HEX_REGEX = /^0[xX][0-9a-fA-F_]+$/;
+    const HEX_REGEX_BIGINT = /^0[xX][0-9a-fA-F_]+n$/;
 
     return {
       Literal(node) {
-        if (typeof node.value !== 'number' || typeof node.raw !== 'string')
+        if (typeof node.value !== 'number' && typeof node.value !== 'bigint')
           return;
+        if (typeof node.raw !== 'string') return;
 
         const raw = node.raw;
+        const isHexBigInt = HEX_REGEX_BIGINT.test(raw);
+        const isHex = HEX_REGEX.test(raw);
 
-        if (!HEX_REGEX.test(raw)) return;
+        if (!isHex && !isHexBigInt) return;
 
-        const value = node.value;
-        if (Number.isNaN(value)) return;
-
-        if (value <= limit) return;
+        const normalized = raw.replace(/_/g, '').replace(/n$/, '');
+        let value = null;
+        if (isHexBigInt) {
+          value = BigInt(normalized);
+          if (value <= BigInt(limit)) return;
+        } else if (isHex) {
+          value = Number(normalized);
+          if (Number.isNaN(value) || value <= limit) return;
+        } else {
+          return;
+        }
 
         context.report({
           node,
@@ -58,7 +69,10 @@ export default {
             limit,
           },
           fix(fixer) {
-            return fixer.replaceText(node, String(value));
+            return fixer.replaceText(
+              node,
+              isHexBigInt ? `${String(BigInt(value))}n` : String(value),
+            );
           },
         });
       },
