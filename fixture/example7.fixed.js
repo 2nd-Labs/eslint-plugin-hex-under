@@ -5,3 +5,5 @@ const bar = 16772829;
 const baz = 1051324;
 
 const qux = 1048576;
+
+const quux = 1048576n;

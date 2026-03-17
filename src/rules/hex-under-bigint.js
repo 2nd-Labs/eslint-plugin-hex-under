@@ -1,7 +1,7 @@
 export default {
   meta: {
     type: 'suggestion',
-    version: '0.0.2',
+    version: '0.1.0',
     defaultOptions: [
       {
         limit: 255,
@@ -9,7 +9,8 @@ export default {
     ],
     docs: {
       description:
-        'Proves that a hexadecimal bigint must be less than a specified value. Default is 255.',
+        'Ensures that a hexadecimal bigint does not exceed a specified value (default: 255).',
+      recommended: false,
     },
     fixable: 'code',
     schema: [
@@ -26,48 +27,37 @@ export default {
     ],
     messages: {
       valueOverGeneralBigInt:
-        'This bigint must be less than or equal {{ limit }}. {{ overValue }} ({{ over255Raw }}) is greater than {{ limit }}.',
+        'Hex number {{ raw }} ({{ value }}) exceeds the limit of {{ limit }}.',
     },
   },
   create(context) {
-    const options = context.options[0] || {};
-    const limit = typeof options.limit === 'number' ? options.limit : 255;
+    const { limit = 255 } = context.options[0] ?? {};
+    const HEX_REGEX = /^0[Xx][0-9a-fA-F_]+n$/;
 
     return {
-      onCodePathEnd: function (_codePath, node) {
-        const tokens =
-          node.tokens?.filter(
-            (token) =>
-              ['Numeric', 'Identifier'].includes(token.type) &&
-              typeof token.value === 'string' &&
-              token.value.startsWith('0x') &&
-              token.value.endsWith('n'),
-          ) || [];
+      Literal(node) {
+        if (typeof node.raw !== 'string') return;
 
-        for (const token of tokens) {
-          try {
-            const hexValue = token.value.slice(0, -1);
-            const value = BigInt(hexValue);
-            const limitBigInt = BigInt(limit);
+        const raw = node.raw;
 
-            if (value > limitBigInt) {
-              context.report({
-                node: token,
-                messageId: 'valueOverGeneralBigInt',
-                data: {
-                  limit: limit,
-                  over255Raw: token.value,
-                  overValue: value.toString(),
-                },
-                fix(fixer) {
-                  return fixer.replaceText(token, value.toString() + 'n');
-                },
-              });
-            }
-          } catch {
-            continue;
-          }
-        }
+        if (!HEX_REGEX.test(raw)) return;
+
+        const value = BigInt(node.raw.slice(0, -1).replace(/_/g, ''));
+
+        if (value <= BigInt(limit)) return;
+
+        context.report({
+          node,
+          messageId: 'valueOverGeneralBigInt',
+          data: {
+            raw,
+            value,
+            limit,
+          },
+          fix(fixer) {
+            return fixer.replaceText(node, `${String(BigInt(value))}n`);
+          },
+        });
       },
     };
   },

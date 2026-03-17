@@ -120,6 +120,44 @@ describe('hex-under-bigint', () => {
     });
   });
 
+  describe('valid cases - hex format variations', () => {
+    it('allows uppercase hex bigint under limit', () => {
+      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 3000 }],
+            code: 'const foo = 0xABCn;',
+          },
+        ],
+        invalid: [],
+      });
+    });
+
+    it('allows mixed case hex bigint under limit', () => {
+      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 3000 }],
+            code: 'const foo = 0XaBcn;',
+          },
+        ],
+        invalid: [],
+      });
+    });
+
+    it('allows hex bigint with numeric separators under limit', () => {
+      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 3000 }],
+            code: 'const foo = 0xa_b_cn;',
+          },
+        ],
+        invalid: [],
+      });
+    });
+  });
+
   describe('invalid cases - exceeds limit', () => {
     it('converts hex bigint over default limit', () => {
       ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
@@ -156,6 +194,50 @@ describe('hex-under-bigint', () => {
             code: 'const big = 0x12345n;',
             output: 'const big = 74565n;',
             options: [{ limit: 70000 }],
+            errors: 1,
+          },
+        ],
+      });
+    });
+  });
+
+  describe('invalid cases - hex format variations', () => {
+    it('converts uppercase hex bigint over limit', () => {
+      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0xABCn;',
+            output: 'const foo = 2748n;',
+            options: [{ limit: 2000 }],
+            errors: 1,
+          },
+        ],
+      });
+    });
+
+    it('converts mixed case hex bigint over limit', () => {
+      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0XaBcn;',
+            output: 'const foo = 2748n;',
+            options: [{ limit: 2000 }],
+            errors: 1,
+          },
+        ],
+      });
+    });
+
+    it('converts hex bigint with numeric separators over limit', () => {
+      ruleTester.run('hex-under-bigint', hexUnderBigintRule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0xa_b_cn;',
+            output: 'const foo = 2748n;',
+            options: [{ limit: 2000 }],
             errors: 1,
           },
         ],
