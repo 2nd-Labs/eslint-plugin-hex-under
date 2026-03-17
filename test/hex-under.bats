@@ -9,19 +9,26 @@ teardown() {
 }
 
 run_fixture() {
-  local fixture="$1"
-  local fixture_name
-  fixture_name=$(basename "$fixture" .js)
+  local input="$1"
+  local filename fixture_name expected
 
-  cp "$fixture" tmp/input.js
+  filename="${input##*/}"        
+  fixture_name="${filename%.js}" 
+  expected="$BATS_TEST_DIRNAME/../fixture/${fixture_name}.fixed.js"
+
+  cp "$input" tmp/input.js
 
   run npx eslint --fix tmp/input.js
-  [ "$status" -eq 0 ]
+  if [ "$status" -ne 0 ]; then
+    echo "ESLint failed for $fixture_name"
+    echo "$output"
+    return 1
+  fi
 
-  diff tmp/input.js "$BATS_TEST_DIRNAME/../fixture/${fixture_name}.fixed.js" || {
+  diff -u tmp/input.js "$expected" || {
     echo -e "\nFixture failed: $fixture_name"
     echo -e "\nExpected:"
-    cat "$BATS_TEST_DIRNAME/../fixture/${fixture_name}.fixed.js"
+    cat "$expected"
     echo -e "\nGot:"
     cat tmp/input.js
     return 1
@@ -46,4 +53,12 @@ run_fixture() {
 
 @test "fixture: example5.js" {
   run_fixture "$BATS_TEST_DIRNAME/../fixture/example5.js"
+}
+
+@test "fixture: example6.js" {
+  run_fixture "$BATS_TEST_DIRNAME/../fixture/example6.js"
+}
+
+@test "fixture: example7.js" {
+  run_fixture "$BATS_TEST_DIRNAME/../fixture/example7.js"
 }
