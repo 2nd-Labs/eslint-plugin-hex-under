@@ -1,7 +1,7 @@
 export default {
   meta: {
     type: 'suggestion',
-    version: '0.3.0',
+    version: '0.4.0',
     defaultOptions: [
       {
         limit: 255,
@@ -9,7 +9,8 @@ export default {
     ],
     docs: {
       description:
-        'Proves that a hexadecimal number must be less than a specified value. Default is 255.',
+        'Ensures that a hexadecimal number does not exceed a specified value (default: 255).',
+      recommended: false,
     },
     fixable: 'code',
     schema: [
@@ -26,50 +27,40 @@ export default {
     ],
     messages: {
       valueOverGeneral:
-        'This number must be less than or equal {{ limit }}. {{ overValue }} ({{ over255Raw }}) is greater than {{ limit }}.',
+        'Hex number {{ raw }} ({{ value }}) exceeds the limit of {{ limit }}.',
     },
   },
+
   create(context) {
-    const options = context.options[0] || {};
-    const limit = typeof options.limit === 'number' ? options.limit : 255;
+    const { limit = 255 } = context.options[0] ?? {};
+    const HEX_REGEX = /^0[Xx][0-9a-fA-F_]+$/;
 
     return {
-      onCodePathEnd: function (_codePath, node) {
-        const tokens =
-          node.tokens?.filter(
-            (token) =>
-              ['Numeric', 'Identifier'].includes(token.type) &&
-              typeof token.value === 'string' &&
-              token.value.startsWith('0x') &&
-              !token.value.endsWith('n'),
-          ) || [];
+      Literal(node) {
+        if (typeof node.value !== 'number' || typeof node.raw !== 'string')
+          return;
 
-        for (const token of tokens) {
-          try {
-            const value = parseInt(token.value, 16);
+        const raw = node.raw;
 
-            if (isNaN(value)) {
-              continue;
-            }
+        if (!HEX_REGEX.test(raw)) return;
 
-            if (value > limit) {
-              context.report({
-                node: token,
-                messageId: 'valueOverGeneral',
-                data: {
-                  limit: limit,
-                  over255Raw: token.value,
-                  overValue: value,
-                },
-                fix(fixer) {
-                  return fixer.replaceText(token, String(value));
-                },
-              });
-            }
-          } catch {
-            continue;
-          }
-        }
+        const value = node.value;
+        if (Number.isNaN(value)) return;
+
+        if (value <= limit) return;
+
+        context.report({
+          node,
+          messageId: 'valueOverGeneral',
+          data: {
+            raw,
+            value,
+            limit,
+          },
+          fix(fixer) {
+            return fixer.replaceText(node, String(value));
+          },
+        });
       },
     };
   },

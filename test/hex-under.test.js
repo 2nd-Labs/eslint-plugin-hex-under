@@ -105,6 +105,32 @@ describe('hex-under rule', () => {
         });
       });
     });
+
+    describe('uppercase 0X valid cases', () => {
+      it('allows uppercase hex under limit', () => {
+        ruleTester.run('hex-under', hexUnderRule, {
+          valid: [
+            {
+              options: [{ limit: 255 }],
+              code: 'const foo = 0Xff;',
+            },
+          ],
+          invalid: [],
+        });
+      });
+
+      it('allows uppercase hex equal to limit', () => {
+        ruleTester.run('hex-under', hexUnderRule, {
+          valid: [
+            {
+              options: [{ limit: 256 }],
+              code: 'const foo = 0X100;',
+            },
+          ],
+          invalid: [],
+        });
+      });
+    });
   });
 
   describe('invalid cases', () => {
@@ -190,6 +216,60 @@ describe('hex-under rule', () => {
       });
     });
 
+    describe('uppercase 0X invalid cases', () => {
+      it('replaces uppercase hex with decimal', () => {
+        ruleTester.run('hex-under', hexUnderRule, {
+          valid: [],
+          invalid: [
+            {
+              code: 'const foo = 0X100;',
+              output: 'const foo = 256;',
+              errors: 1,
+            },
+          ],
+        });
+      });
+
+      it('handles uppercase hex in expressions', () => {
+        ruleTester.run('hex-under', hexUnderRule, {
+          valid: [],
+          invalid: [
+            {
+              code: 'if (0XABC > 0) {}',
+              output: 'if (2748 > 0) {}',
+              errors: 1,
+            },
+          ],
+        });
+      });
+
+      it('handles negative uppercase hex', () => {
+        ruleTester.run('hex-under', hexUnderRule, {
+          valid: [],
+          invalid: [
+            {
+              code: 'const foo = -0X100;',
+              output: 'const foo = -256;',
+              errors: 1,
+            },
+          ],
+        });
+      });
+
+      it('handles mixed case hex digits with 0X', () => {
+        ruleTester.run('hex-under', hexUnderRule, {
+          valid: [],
+          invalid: [
+            {
+              code: 'const foo = 0XaBc;',
+              output: 'const foo = 2748;',
+              errors: 1,
+            },
+          ],
+        });
+      });
+    });
+
     describe('number formats', () => {
       it('handles uppercase hex', () => {
         ruleTester.run('hex-under', hexUnderRule, {
@@ -217,7 +297,7 @@ describe('hex-under rule', () => {
         });
       });
 
-      it.skip('handles numeric separators', () => {
+      it('handles numeric separators', () => {
         ruleTester.run('hex-under', hexUnderRule, {
           valid: [],
           invalid: [
