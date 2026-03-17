@@ -46,16 +46,16 @@ npm install --save-dev eslint-plugin-hex-under
 ```js
 // eslint.config.js
 
-import eslintPluginHexUnder from "eslint-plugin-hex-under";
+import eslintPluginHexUnder from 'eslint-plugin-hex-under';
 
 export default [
   {
-    files: ["*.js"],
+    files: ['*.js'],
     plugins: {
-      "hex-under": eslintPluginHexUnder,
+      'hex-under': eslintPluginHexUnder,
     },
     rules: {
-      "hex-under/hex-under": ["error", { limit: 255 }],
+      'hex-under/hex-under': ['error', { limit: 255 }],
     },
   },
 ];
