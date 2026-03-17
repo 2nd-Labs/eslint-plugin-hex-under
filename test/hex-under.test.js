@@ -3,7 +3,7 @@ import { RuleTester } from 'eslint';
 import hexUnderRule from '../src/rules/hex-under.js';
 
 const ruleTester = new RuleTester({
-  languageOptions: { ecmaVersion: 2022 },
+  languageOptions: { ecmaVersion: 2025 },
 });
 
 describe('hex-under rule', () => {
