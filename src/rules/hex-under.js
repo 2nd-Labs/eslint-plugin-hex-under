@@ -1,3 +1,6 @@
+const HEX_REGEX = /^0[xX][0-9a-fA-F_]+$/;
+const HEX_REGEX_BIGINT = /^0[xX][0-9a-fA-F_]+n$/;
+
 export default {
   meta: {
     type: 'suggestion',
@@ -33,8 +36,6 @@ export default {
 
   create(context) {
     const [{ limit = 255 } = {}] = context.options;
-    const HEX_REGEX = /^0[xX][0-9a-fA-F_]+$/;
-    const HEX_REGEX_BIGINT = /^0[xX][0-9a-fA-F_]+n$/;
 
     return {
       Literal(node) {
