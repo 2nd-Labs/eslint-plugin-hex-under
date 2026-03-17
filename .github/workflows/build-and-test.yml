@@ -54,7 +54,7 @@ jobs:
 
   test:
     name: Testing
-    needs: 
+    needs:
       - audit
       - lint
     strategy:
@@ -77,7 +77,7 @@ jobs:
 
   bats:
     name: Bats Tests
-    needs: 
+    needs:
       - audit
       - lint
     runs-on: ubuntu-slim
