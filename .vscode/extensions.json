@@ -1,6 +1,3 @@
 {
-  "recommendations": [
-    "esbenp.prettier-vscode",
-    "jetmartin.bats"
-  ]
+  "recommendations": ["esbenp.prettier-vscode", "jetmartin.bats"]
 }
