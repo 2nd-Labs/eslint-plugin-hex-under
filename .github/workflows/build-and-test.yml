@@ -48,7 +48,7 @@ jobs:
         run: npm audit --audit-level=high
   lint:
     name: Linting
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-slim
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -56,7 +56,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: DEBUG=eslint:eslint npm run lint -- --ignore-pattern 'fixture/*'
+      - run: DEBUG=eslint:eslint npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js'
 
   test:
     name: Testing

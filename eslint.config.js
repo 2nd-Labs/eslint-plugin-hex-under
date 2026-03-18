@@ -6,7 +6,7 @@ import plugin from './src/eslint-plugin-hex-under.js';
 export default [
   {
     ...js.configs.recommended,
-    ignores: ['fixture/*.js', 'tmp/*.js'],
+    ignores: ['test/bats/fixture/**/*.js', 'tmp/*.js'],
   },
   {
     plugins: {
