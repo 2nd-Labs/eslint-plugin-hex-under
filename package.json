@@ -28,6 +28,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@vitest/coverage-v8": "4.1.0",
+    "@vitest/eslint-plugin": "1.6.12",
     "bats": "1.13.0",
     "eslint": "10.0.3",
     "prettier": "3.8.1",
@@ -35,6 +36,6 @@
     "vitest": "4.1.0"
   },
   "peerDependencies": {
-    "eslint": "^10.0.0"
+    "eslint": ">= 10"
   }
 }
