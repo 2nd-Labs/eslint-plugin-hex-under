@@ -96,20 +96,20 @@ jobs:
       - run: npm ci
       - run: npm run test:bats
 
-  bats_experimental: 
-   runs-on: ubuntu-latest
-   name: Install Bats and bats libs
-   needs:
+  bats_experimental:
+    runs-on: ubuntu-latest
+    name: Performing Bats Tests
+    needs:
       - audit
       - lint
-   steps:
-     - name: Checkout
-       uses: actions/checkout@v6
-     - name: Setup Bats and bats libs
-       uses: bats-core/bats-action@4.0.0
-     - name: Bats Tests
-       shell: bash
-       env:
-        BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
-        TERM: xterm
-       run: bats test/bats/*.bats
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup Bats and bats libs
+        uses: bats-core/bats-action@4.0.0
+      - name: Bats Tests
+        shell: bash
+        env:
+          BATS_LIB_PATH: ${{ steps.setup-bats.outputs.lib-path }}
+          TERM: xterm
+        run: bats test/bats/*.bats
