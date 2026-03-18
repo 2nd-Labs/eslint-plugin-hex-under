@@ -8,6 +8,7 @@ export default {
     defaultOptions: [
       {
         limit: 255,
+        skipBigInt: false,
       },
     ],
     docs: {
@@ -24,6 +25,9 @@ export default {
             type: 'integer',
             minimum: 0,
           },
+          skipBigInt: {
+            type: 'boolean',
+          },
         },
         additionalProperties: false,
       },
@@ -35,7 +39,7 @@ export default {
   },
 
   create(context) {
-    const [{ limit = 255 } = {}] = context.options;
+    const [{ limit = 255, skipBigInt = false } = {}] = context.options;
 
     return {
       'Literal[raw=/^0[xX]/]'(node) {
@@ -48,6 +52,8 @@ export default {
         const isHex = HEX_REGEX.test(raw);
 
         if (!isHex && !isHexBigInt) return;
+
+        if (skipBigInt && isHexBigInt) return;
 
         const normalized = raw.replace(/_/g, '').replace(/n$/, '');
         let value = null;

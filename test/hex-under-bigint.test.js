@@ -158,6 +158,86 @@ describe('hex-under-bigint', () => {
     });
   });
 
+  describe('option: skipBigInt', () => {
+    it('ignores bigint over limit when skipBigInt is true', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 255, skipBigInt: true }],
+            code: 'const foo = 0x100n;',
+          },
+        ],
+        invalid: [],
+      });
+    });
+
+    it('ignores bigint under limit when skipBigInt is true', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 10, skipBigInt: true }],
+            code: 'const foo = 0xfn;',
+          },
+        ],
+        invalid: [],
+      });
+    });
+
+    it('does NOT ignore normal hex numbers when skipBigInt is true', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [],
+        invalid: [
+          {
+            options: [{ limit: 255, skipBigInt: true }],
+            code: 'const foo = 0x100;',
+            output: 'const foo = 256;',
+            errors: 1,
+          },
+        ],
+      });
+    });
+
+    it('still validates normal hex under limit when skipBigInt is true', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 255, skipBigInt: true }],
+            code: 'const foo = 0xff;',
+          },
+        ],
+        invalid: [],
+      });
+    });
+
+    it('ignores bigint in different contexts when skipBigInt is true', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 1, skipBigInt: true }],
+            code: `
+            function test() {
+              return 0xFFFFn;
+            }
+          `,
+          },
+        ],
+        invalid: [],
+      });
+    });
+
+    it('ignores bigint with separators when skipBigInt is true', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [
+          {
+            options: [{ limit: 1, skipBigInt: true }],
+            code: 'const foo = 0xff_ffn;',
+          },
+        ],
+        invalid: [],
+      });
+    });
+  });
+
   describe('invalid cases - exceeds limit', () => {
     it('converts hex bigint over default limit', () => {
       ruleTester.run('hex-under', hexUnderBigintRule, {
@@ -238,6 +318,35 @@ describe('hex-under-bigint', () => {
             code: 'const foo = 0xa_b_cn;',
             output: 'const foo = 2748n;',
             options: [{ limit: 2000 }],
+            errors: 1,
+          },
+        ],
+      });
+    });
+  });
+
+  describe('invalid cases - skipBigInt option', () => {
+    it('still reports bigint by default (skipBigInt = false)', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0x100n;',
+            output: 'const foo = 256n;',
+            errors: 1,
+          },
+        ],
+      });
+    });
+
+    it('reports bigint when skipBigInt is false', () => {
+      ruleTester.run('hex-under', hexUnderBigintRule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0x100n;',
+            options: [{ limit: 255, skipBigInt: false }],
+            output: 'const foo = 256n;',
             errors: 1,
           },
         ],
