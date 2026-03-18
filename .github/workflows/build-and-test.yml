@@ -3,16 +3,6 @@ name: Build and Test
 on:
   push:
     branches: [main]
-    paths:
-      - 'src/**'
-      - 'package*.json'
-      - '.github/**/*.yml'
-      - 'test/**'
-      - 'fixture/**'
-      - '*.config.js'
-      - '.prettierrc'
-      - '.gitignore'
-      - '.npmignore'
 
   pull_request:
     branches: [main]
