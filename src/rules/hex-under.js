@@ -42,16 +42,10 @@ export default {
     const [{ limit = 255, skipBigInt = false } = {}] = context.options;
 
     return {
-      'Literal[raw=/^0[xX]/]'(node) {
-        if (typeof node.value !== 'number' && typeof node.value !== 'bigint')
-          return;
-        if (typeof node.raw !== 'string') return;
-
+      'Literal[raw=/^0[xX][0-9a-fA-F_]+n?$/]'(node) {
         const raw = node.raw;
         const isHexBigInt = HEX_REGEX_BIGINT.test(raw);
         const isHex = HEX_REGEX.test(raw);
-
-        if (!isHex && !isHexBigInt) return;
 
         if (skipBigInt && isHexBigInt) return;
 
@@ -60,11 +54,10 @@ export default {
         if (isHexBigInt) {
           value = BigInt(normalized);
           if (value <= BigInt(limit)) return;
-        } else if (isHex) {
+        }
+        if (isHex) {
           value = Number(normalized);
           if (Number.isNaN(value) || value <= limit) return;
-        } else {
-          return;
         }
 
         context.report({
