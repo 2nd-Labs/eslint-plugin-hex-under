@@ -1,4 +1,4 @@
-import { describe, it } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { RuleTester } from 'eslint';
 import hexUnderBigintRule from '../src/rules/hex-under.js';
 
@@ -11,6 +11,8 @@ describe('hex-under-bigint', () => {
 
   describe('valid cases - under limit', () => {
     it('allows hex bigint under limit (255)', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -23,6 +25,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows hex bigint under small limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -35,6 +39,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows hex bigint exactly at limit boundary', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -49,6 +55,8 @@ describe('hex-under-bigint', () => {
 
   describe('valid cases - different declarations', () => {
     it('allows const declaration', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -61,6 +69,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows let declaration', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -73,6 +83,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows var declaration', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -87,6 +99,8 @@ describe('hex-under-bigint', () => {
 
   describe('valid cases - usage contexts', () => {
     it('allows bigint inside function return', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -98,6 +112,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows bigint as function argument', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -109,6 +125,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows bigint in arrow function', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -122,6 +140,8 @@ describe('hex-under-bigint', () => {
 
   describe('valid cases - hex format variations', () => {
     it('allows uppercase hex bigint under limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -134,6 +154,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows mixed case hex bigint under limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -146,6 +168,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('allows hex bigint with numeric separators under limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -160,6 +184,8 @@ describe('hex-under-bigint', () => {
 
   describe('option: skipBigInt', () => {
     it('ignores bigint over limit when skipBigInt is true', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -172,6 +198,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('ignores bigint under limit when skipBigInt is true', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -184,6 +212,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('does NOT ignore normal hex numbers when skipBigInt is true', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -198,6 +228,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('still validates normal hex under limit when skipBigInt is true', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -210,6 +242,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('ignores bigint in different contexts when skipBigInt is true', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -226,6 +260,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('ignores bigint with separators when skipBigInt is true', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [
           {
@@ -240,6 +276,8 @@ describe('hex-under-bigint', () => {
 
   describe('invalid cases - exceeds limit', () => {
     it('converts hex bigint over default limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -253,6 +291,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts hex bigint over custom limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -267,6 +307,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts large hex bigint', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -283,6 +325,8 @@ describe('hex-under-bigint', () => {
 
   describe('invalid cases - hex format variations', () => {
     it('converts uppercase hex bigint over limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -297,6 +341,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts mixed case hex bigint over limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -311,6 +357,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('converts hex bigint with numeric separators over limit', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -327,6 +375,8 @@ describe('hex-under-bigint', () => {
 
   describe('invalid cases - skipBigInt option', () => {
     it('still reports bigint by default (skipBigInt = false)', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
@@ -340,6 +390,8 @@ describe('hex-under-bigint', () => {
     });
 
     it('reports bigint when skipBigInt is false', () => {
+      expect.assertions(0);
+
       ruleTester.run('hex-under', hexUnderBigintRule, {
         valid: [],
         invalid: [
