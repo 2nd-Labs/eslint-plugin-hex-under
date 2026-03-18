@@ -38,7 +38,7 @@ export default {
     const [{ limit = 255 } = {}] = context.options;
 
     return {
-      Literal(node) {
+      'Literal[raw=/^0[xX]/]'(node) {
         if (typeof node.value !== 'number' && typeof node.value !== 'bigint')
           return;
         if (typeof node.raw !== 'string') return;
