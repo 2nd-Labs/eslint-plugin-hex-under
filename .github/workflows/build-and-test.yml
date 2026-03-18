@@ -56,7 +56,7 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
-      - run: DEBUG=eslint:eslint npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js'
+      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js'
 
   test:
     name: Testing
