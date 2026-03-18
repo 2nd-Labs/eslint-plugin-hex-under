@@ -13,7 +13,13 @@ export default [
       'hex-under': plugin,
     },
     rules: {
-      'hex-under/hex-under': ['error', { limit: 255 }],
+      'hex-under/hex-under': [
+        'error',
+        {
+          limit: 255,
+          skipBigInt: false,
+        },
+      ],
     },
   },
 ];
