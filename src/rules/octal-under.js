@@ -28,10 +28,22 @@ export default {
 
   create(context) {
     const [{ limit = 511, skipBigInt = false } = {}] = context.options;
-
+    let comments = [];
     return {
+      Program(node) {
+        comments = node.comments || [];
+      },
       'Literal[raw=/^0[oO]?[0-7_]+n?$/]'(node) {
         const raw = node.raw;
+
+        const ignore = comments.some((c) => {
+          const line = c.loc.end.line;
+          return (
+            (line === node.loc.start.line - 1 || line === node.loc.end.line) &&
+            c.value.trim() === 'ignore-octal-under'
+          );
+        });
+        if (ignore) return;
 
         if (
           raw.startsWith('0') &&

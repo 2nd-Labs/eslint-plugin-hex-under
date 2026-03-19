@@ -40,10 +40,23 @@ export default {
 
   create(context) {
     const [{ limit = 255, skipBigInt = false } = {}] = context.options;
-
+    let comments = [];
     return {
+      Program(node) {
+        comments = node.comments || [];
+      },
       'Literal[raw=/^0[xX][0-9a-fA-F_]+n?$/]'(node) {
         const raw = node.raw;
+
+        const ignore = comments.some((c) => {
+          const line = c.loc.end.line;
+          return (
+            (line === node.loc.start.line - 1 || line === node.loc.end.line) &&
+            c.value.trim() === 'ignore-hex-under'
+          );
+        });
+        if (ignore) return;
+
         const isHexBigInt = HEX_REGEX_BIGINT.test(raw);
         const isHex = HEX_REGEX.test(raw);
 

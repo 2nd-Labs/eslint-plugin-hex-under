@@ -25,6 +25,9 @@ describe('octal-under rule', () => {
           'const foo = 0O7_77;',
           'const foo = 0o7_77n;',
           'const foo = 0O7_77n;',
+
+          '// ignore-octal-under\nconst foo = 0o1000;',
+          'const foo = 0o1000; // ignore-octal-under',
         ],
         invalid: [],
       });

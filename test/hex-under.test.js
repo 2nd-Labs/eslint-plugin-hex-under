@@ -35,6 +35,9 @@ describe('hex-under rule', () => {
           'const foo = 0XF_f;',
           'const foo = 0xF_fn;',
           'const foo = 0XF_fn;',
+
+          '// ignore-hex-under\nconst foo = 0x100;',
+          'const foo = 0x100; // ignore-hex-under',
         ],
         invalid: [],
       });

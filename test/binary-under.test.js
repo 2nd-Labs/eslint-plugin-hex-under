@@ -27,6 +27,9 @@ describe('binary-under rule', () => {
 
           'const foo = 0b11_11n;',
           'const foo = 0B11_11n;',
+
+          '// ignore-binary-under\nconst foo = 0b10000;',
+          'const foo = 0b10000; // ignore-binary-under',
         ],
         invalid: [],
       });
