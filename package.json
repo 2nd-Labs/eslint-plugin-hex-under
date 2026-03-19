@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-hex-under",
-  "version": "0.12.3",
+  "version": "1.0.0",
   "type": "module",
   "main": "src/eslint-plugin-hex-under.js",
   "scripts": {
