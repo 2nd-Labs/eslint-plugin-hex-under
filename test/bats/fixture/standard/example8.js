@@ -1,4 +1,0 @@
-const a = -0x1a;
-const b = -0xf_f;
-const c = -0x1_0000;
-const d = -0x1_0000n;

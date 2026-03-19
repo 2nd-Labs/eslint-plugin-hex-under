@@ -22,6 +22,9 @@ describe('binary-under rule', () => {
           'const foo = 0b1111n;',
           'const foo = 0B1111n;',
 
+          'const foo = -0b1111;',
+          'const foo = -0B1111n;',
+
           'const foo = 0b11_11;',
           'const foo = 0B11_11;',
 
@@ -79,6 +82,11 @@ describe('binary-under rule', () => {
           {
             code: 'const foo = 0B100000000n;',
             output: 'const foo = 256n;',
+            errors: 1,
+          },
+          {
+            code: 'const foo = -0B100000000n;',
+            output: 'const foo = -256n;',
             errors: 1,
           },
         ],
@@ -156,6 +164,28 @@ describe('binary-under rule', () => {
           },
         ],
         invalid: [],
+      });
+    });
+
+    it('invalid cases', () => {
+      expect.assertions(0);
+
+      ruleTester.run('binary-under', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0b100000000n;',
+            output: 'const foo = 256n;',
+            options: [{ skipBigInt: false }],
+            errors: 1,
+          },
+          {
+            code: 'const foo = 0B100000000n;',
+            output: 'const foo = 256n;',
+            options: [{ skipBigInt: false }],
+            errors: 1,
+          },
+        ],
       });
     });
   });
