@@ -9,6 +9,13 @@ const ruleTester = new RuleTester({
   },
 });
 
+const oldRuleTester = new RuleTester({
+  languageOptions: {
+    ecmaVersion: 2025,
+    sourceType: 'script',
+  },
+});
+
 describe('octal-under rule', () => {
   describe('default options', () => {
     it('valid cases', () => {
@@ -26,6 +33,11 @@ describe('octal-under rule', () => {
           'const foo = 0o7_77n;',
           'const foo = 0O7_77n;',
         ],
+        invalid: [],
+      });
+
+      oldRuleTester.run('octal-under', rule, {
+        valid: ['const foo = 0777;'],
         invalid: [],
       });
     });

@@ -1,5 +1,3 @@
-import { version } from 'react';
-
 const OCTAL_REGEX = /^0[oO]?[0-7_]+$/;
 const OCTAL_REGEX_BIGINT = /^0[oO]?[0-7_]+n$/;
 
@@ -32,8 +30,16 @@ export default {
     const [{ limit = 511, skipBigInt = false } = {}] = context.options;
 
     return {
-      'Literal[raw=/^0[oO][0-7_]+n?$/]'(node) {
+      'Literal[raw=/^0[oO]?[0-7_]+n?$/]'(node) {
         const raw = node.raw;
+
+        if (
+          raw.startsWith('0') &&
+          !raw.startsWith('0o') &&
+          !raw.startsWith('0O')
+        ) {
+          return;
+        }
 
         const isBigInt = OCTAL_REGEX_BIGINT.test(raw);
         const isOctal = OCTAL_REGEX.test(raw);
