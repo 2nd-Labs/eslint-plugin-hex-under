@@ -1,8 +1,11 @@
+import { version } from 'react';
+
 const BINARY_REGEX = /^0[bB][01_]+$/;
 const BINARY_REGEX_BIGINT = /^0[bB][01_]+n$/;
 
 export default {
   meta: {
+    version: '0.1.0',
     type: 'suggestion',
     docs: {
       description: 'Ensures binary numbers do not exceed a limit.',
