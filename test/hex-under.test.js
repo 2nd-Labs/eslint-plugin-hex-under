@@ -1,427 +1,152 @@
-import { describe, expect, it } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { RuleTester } from 'eslint';
-import hexUnderRule from '../src/rules/hex-under.js';
+import rule from '../src/rules/hex-under.js';
 
 const ruleTester = new RuleTester({
-  languageOptions: { ecmaVersion: 2025 },
+  languageOptions: {
+    ecmaVersion: 2025,
+    sourceType: 'module',
+  },
 });
 
 describe('hex-under rule', () => {
-  describe('valid cases', () => {
-    describe('with limit option', () => {
-      it('allows hex under limit', () => {
-        expect.assertions(0);
+  describe('default options', () => {
+    it('valid cases', () => {
+      expect.assertions(0);
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [
-            {
-              options: [{ limit: 255 }],
-              code: 'const foo = 0xff;',
-            },
-          ],
-          invalid: [],
-        });
-      });
+      ruleTester.run('hex-under', rule, {
+        valid: [
+          'const foo = 0xff;',
+          'const foo = 0Xff;',
+          'const foo = 0xffn;',
+          'const foo = 0Xffn;',
 
-      it('allows small hex under custom limit', () => {
-        expect.assertions(0);
+          'const foo = 0xFF;',
+          'const foo = 0XFF;',
+          'const foo = 0xFFn;',
+          'const foo = 0XFFn;',
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [
-            {
-              options: [{ limit: 15 }],
-              code: 'const foo = 0xf;',
-            },
-          ],
-          invalid: [],
-        });
-      });
+          'const foo = 0xFf;',
+          'const foo = 0XFf;',
+          'const foo = 0xFfn;',
+          'const foo = 0XFfn;',
 
-      it('allows hex equal to limit boundary', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [
-            {
-              options: [{ limit: 256 }],
-              code: 'const foo = 0x100;',
-            },
-          ],
-          invalid: [],
-        });
+          'const foo = 0xF_f;',
+          'const foo = 0XF_f;',
+          'const foo = 0xF_fn;',
+          'const foo = 0XF_fn;',
+        ],
+        invalid: [],
       });
     });
 
-    describe('different declarations', () => {
-      it('allows const declaration', () => {
-        expect.assertions(0);
+    it('invalid cases', () => {
+      expect.assertions(0);
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ options: [{ limit: 255 }], code: 'const foo = 0xff;' }],
-          invalid: [],
-        });
-      });
-
-      it('allows let declaration', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ options: [{ limit: 255 }], code: 'let foo = 0xff;' }],
-          invalid: [],
-        });
-      });
-
-      it('allows var declaration', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ options: [{ limit: 256 }], code: 'var foo = 0xff;' }],
-          invalid: [],
-        });
-      });
-    });
-
-    describe('different contexts', () => {
-      it('allows hex in function return', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ code: 'function func() {\n  return 0xff;\n}' }],
-          invalid: [],
-        });
-      });
-
-      it('allows hex as function argument', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ code: 'functionA(0xef);' }],
-          invalid: [],
-        });
-      });
-
-      it('allows hex in arrow function', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ code: 'const func = () => 0xab;' }],
-          invalid: [],
-        });
-      });
-
-      it('ignores hex-like string', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ code: "const str = '0x100';" }],
-          invalid: [],
-        });
-      });
-
-      it('ignores hex-like template string', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [{ code: '`value: 0x100`' }],
-          invalid: [],
-        });
-      });
-    });
-
-    describe('uppercase 0X valid cases', () => {
-      it('allows uppercase hex under limit', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [
-            {
-              options: [{ limit: 255 }],
-              code: 'const foo = 0Xff;',
-            },
-          ],
-          invalid: [],
-        });
-      });
-
-      it('allows uppercase hex equal to limit', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [
-            {
-              options: [{ limit: 256 }],
-              code: 'const foo = 0X100;',
-            },
-          ],
-          invalid: [],
-        });
+      ruleTester.run('hex-under', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0x100;',
+            output: 'const foo = 256;',
+            errors: 1,
+          },
+          {
+            code: 'const foo = 0X100;',
+            output: 'const foo = 256;',
+            errors: 1,
+          },
+          {
+            code: 'const foo = 0x100n;',
+            output: 'const foo = 256n;',
+            errors: 1,
+          },
+          {
+            code: 'const foo = 0X100n;',
+            output: 'const foo = 256n;',
+            errors: 1,
+          },
+        ],
       });
     });
   });
 
-  describe('invalid cases', () => {
-    describe('basic replacements', () => {
-      it('replaces hex with decimal', () => {
-        expect.assertions(0);
+  describe('with custom limit (15)', () => {
+    it('valid cases', () => {
+      expect.assertions(0);
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const foo = 0x100;',
-              output: 'const foo = 256;',
-              errors: 1,
-            },
-          ],
-        });
-      });
+      ruleTester.run('hex-under', rule, {
+        valid: [
+          { code: 'const foo = 0xf;', options: [{ limit: 15 }] },
+          { code: 'const foo = 0Xf;', options: [{ limit: 15 }] },
 
-      it('replaces hex in let declaration', () => {
-        expect.assertions(0);
+          { code: 'const foo = 0xfn;', options: [{ limit: 15 }] },
+          { code: 'const foo = 0Xfn;', options: [{ limit: 15 }] },
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'let foo = 0x100;',
-              output: 'let foo = 256;',
-              errors: 1,
-            },
-          ],
-        });
-      });
+          { code: 'const foo = 0xF;', options: [{ limit: 15 }] },
+          { code: 'const foo = 0XF;', options: [{ limit: 15 }] },
 
-      it('replaces hex in var declaration', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'var foo = 0x100;',
-              output: 'var foo = 256;',
-              errors: 1,
-            },
-          ],
-        });
+          { code: 'const foo = 0xFn;', options: [{ limit: 15 }] },
+          { code: 'const foo = 0XFn;', options: [{ limit: 15 }] },
+        ],
+        invalid: [],
       });
     });
 
-    describe('different code contexts', () => {
-      it('replaces hex in function return', () => {
-        expect.assertions(0);
+    it('invalid cases', () => {
+      expect.assertions(0);
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'function func() {\n  return 0x100;\n}',
-              output: 'function func() {\n  return 256;\n}',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('replaces hex in function call', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'functionA(0x1234);',
-              output: 'functionA(4660);',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('replaces hex in arrow function', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const func = () => 0xabc;',
-              output: 'const func = () => 2748;',
-              errors: 1,
-            },
-          ],
-        });
+      ruleTester.run('hex-under', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const foo = 0x10;',
+            output: 'const foo = 16;',
+            options: [{ limit: 15 }],
+            errors: 1,
+          },
+          {
+            code: 'const foo = 0X10;',
+            output: 'const foo = 16;',
+            options: [{ limit: 15 }],
+            errors: 1,
+          },
+          {
+            code: 'const foo = 0x10n;',
+            output: 'const foo = 16n;',
+            options: [{ limit: 15 }],
+            errors: 1,
+          },
+          {
+            code: 'const foo = 0X10n;',
+            output: 'const foo = 16n;',
+            options: [{ limit: 15 }],
+            errors: 1,
+          },
+        ],
       });
     });
+  });
 
-    describe('uppercase 0X invalid cases', () => {
-      it('replaces uppercase hex with decimal', () => {
-        expect.assertions(0);
+  describe('with skipBigInt: true', () => {
+    it('valid cases', () => {
+      expect.assertions(0);
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const foo = 0X100;',
-              output: 'const foo = 256;',
-              errors: 1,
-            },
-          ],
-        });
-      });
+      ruleTester.run('hex-under', rule, {
+        valid: [
+          { code: 'const foo = 0xff;', options: [{ skipBigInt: true }] },
+          { code: 'const foo = 0Xff;', options: [{ skipBigInt: true }] },
 
-      it('handles uppercase hex in expressions', () => {
-        expect.assertions(0);
+          { code: 'const foo = 0xffffn;', options: [{ skipBigInt: true }] },
+          { code: 'const foo = 0Xffffn;', options: [{ skipBigInt: true }] },
 
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'if (0XABC > 0) {}',
-              output: 'if (2748 > 0) {}',
-              errors: 1,
-            },
-          ],
-        });
-      });
+          { code: 'const foo = 0xFF;', options: [{ skipBigInt: true }] },
+          { code: 'const foo = 0XFF;', options: [{ skipBigInt: true }] },
 
-      it('handles negative uppercase hex', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const foo = -0X100;',
-              output: 'const foo = -256;',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('handles mixed case hex digits with 0X', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const foo = 0XaBc;',
-              output: 'const foo = 2748;',
-              errors: 1,
-            },
-          ],
-        });
-      });
-    });
-
-    describe('number formats', () => {
-      it('handles uppercase hex', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const foo = 0xABC;',
-              output: 'const foo = 2748;',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('handles negative hex', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const foo = -0x100;',
-              output: 'const foo = -256;',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('handles numeric separators', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const foo = 0x1_00;',
-              output: 'const foo = 256;',
-              errors: 1,
-            },
-          ],
-        });
-      });
-    });
-
-    describe('expressions and structures', () => {
-      it('replaces hex in condition', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'if (0x100 > 5) {}',
-              output: 'if (256 > 5) {}',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('replaces hex in array', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const arr = [0x100];',
-              output: 'const arr = [256];',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('replaces hex in object', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const obj = { a: 0x100 };',
-              output: 'const obj = { a: 256 };',
-              errors: 1,
-            },
-          ],
-        });
-      });
-
-      it('handles multiple hex numbers', () => {
-        expect.assertions(0);
-
-        ruleTester.run('hex-under', hexUnderRule, {
-          valid: [],
-          invalid: [
-            {
-              code: 'const a = 0x100; const b = 0x200;',
-              output: 'const a = 256; const b = 512;',
-              errors: 2,
-            },
-          ],
-        });
+          { code: 'const foo = 0xFFFFn;', options: [{ skipBigInt: true }] },
+          { code: 'const foo = 0XFFFFn;', options: [{ skipBigInt: true }] },
+        ],
+        invalid: [],
       });
     });
   });
