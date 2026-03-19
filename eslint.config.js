@@ -2,6 +2,7 @@
 
 import js from '@eslint/js';
 import vitest from '@vitest/eslint-plugin';
+import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import plugin from './src/eslint-plugin-hex-under.js';
 
 export default [
@@ -54,4 +55,5 @@ export default [
       ],
     },
   },
+  eslintPlugin.configs.recommended,
 ];
