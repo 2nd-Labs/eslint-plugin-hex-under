@@ -22,6 +22,13 @@ const binary = 0b1111_1111;
 
 const octal = 0o377;
 
+/* You can also turn off the rule with a comment, see next examples */
+// ignore-hex-under
+const hexTooBig = 0xfffff;
+const binTooBig = 0b1000_0000_0000; // ignore-binary-under
+// ignore-octal-under
+const octalTooBig = 0o777777;
+
 // valid with { limit: 255, skipBigInt: true }
 const mask = 0xdead_beefn;
 
