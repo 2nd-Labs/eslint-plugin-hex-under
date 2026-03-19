@@ -8,7 +8,7 @@ teardown() {
   rm -rf "$TMPDIR"
 }
 
-@test "ESLint converts old octal literal to decimal" {
+@test "ESLint ignores old octal literal" {
   ORIGINAL_FILE="$TMPDIR/original.js"
   echo "const foo = 01000;" > "$ORIGINAL_FILE"
 
