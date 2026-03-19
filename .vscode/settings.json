@@ -1,7 +1,24 @@
 {
+  "breadcrumbs.enabled": true,
+  "editor.bracketPairColorization.enabled": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "always"
+  },
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.fontFamily": "Fira Code",
+  "editor.fontLigatures": true,
   "editor.fontSize": 14,
-  "terminal.integrated.fontSize": 14,
-  "window.zoomLevel": 0,
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode"
+  "editor.inlineSuggest.enabled": true,
+  "editor.lineHeight": 22,
+  "editor.minimap.enabled": false,
+  "editor.renderWhitespace": "selection",
+  "editor.stickyScroll.enabled": true,
+  "editor.tabCompletion": "on",
+  "editor.wordWrap": "on",
+  "files.trimTrailingWhitespace": true,
+  "javascript.suggest.autoImports": true,
+  "terminal.integrated.fontSize": 14,
+  "window.zoomLevel": 0
 }
