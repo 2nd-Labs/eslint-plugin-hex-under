@@ -35,6 +35,6 @@ run_fixture() {
   }
 }
 
-@test "fixture: comments" {
+@test "fixture: example.comments.js" {
   run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.js"
 }
