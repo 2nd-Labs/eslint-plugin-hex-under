@@ -18,6 +18,13 @@ function add(a, b) {
   return a + b + 0x1f;
 }
 
+const binary = 0b1111_1111;
+
+const octal = 0o377;
+
+// valid with { limit: 255, skipBigInt: true }
+const mask = 0xdead_beefn;
+
 // invalid with { limit: 255 }
 const signal = 0x21b;
 
@@ -29,6 +36,10 @@ function add(a, b) {
 
 let d = 0xaa_ffn;
 
+const binary = 0b1_0000_0000;
+
+const octal = 0o400;
+
 // This can be transformed to:
 const signal = 539;
 
@@ -39,6 +50,10 @@ function add(a, b) {
 }
 
 let d = 43775;
+
+const binary = 256;
+
+const octal = 256;
 ```
 
 ## Integration
@@ -59,7 +74,9 @@ export default [
       'hex-under': eslintPluginHexUnder,
     },
     rules: {
-      'hex-under/hex-under': ['error', { limit: 255 }],
+      'hex-under/hex-under': ['error', { limit: 255, skipBigInt: false }],
+      'hex-under/octal-under': ['error', { limit: 511, skipBigInt: false }],
+      'hex-under/binary-under': ['error', { limit: 15, skipBigInt: false }],
     },
   },
 ];

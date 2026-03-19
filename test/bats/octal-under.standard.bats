@@ -14,11 +14,11 @@ run_fixture() {
 
   filename="${input##*/}"        
   fixture_name="${filename%.js}" 
-  expected="$BATS_TEST_DIRNAME/fixture/limit/${fixture_name}.fixed.js"
+  expected="$BATS_TEST_DIRNAME/fixture/standard/${fixture_name}.fixed.js"
 
   cp "$input" tmp/input.js
 
-  run npx eslint --rule "'hex-under/hex-under': ['error', { limit: 100 }]" --fix tmp/input.js
+  run npx eslint --fix tmp/input.js
   if [ "$status" -ne 0 ]; then
     echo "ESLint failed for $fixture_name"
     echo "$output"
@@ -35,6 +35,6 @@ run_fixture() {
   }
 }
 
-@test "fixture: example.limit-100.js" {
-  run_fixture "$BATS_TEST_DIRNAME/fixture/limit/example.limit-100.js"
+@test "fixture: example1.octal.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example1.octal.js"
 }

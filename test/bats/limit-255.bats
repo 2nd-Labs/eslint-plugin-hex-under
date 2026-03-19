@@ -18,7 +18,11 @@ run_fixture() {
 
   cp "$input" tmp/input.js
 
-  run npx eslint --rule "'hex-under/hex-under': ['error', { limit: 100 }]" --fix tmp/input.js
+  run npx eslint \
+    --rule "'hex-under/hex-under': ['error', { limit: 255 }]" \
+    --rule "'hex-under/octal-under': ['error', { limit: 255 }]" \
+    --rule "'hex-under/binary-under': ['error', { limit: 255 }]" \
+    --fix tmp/input.js
   if [ "$status" -ne 0 ]; then
     echo "ESLint failed for $fixture_name"
     echo "$output"
@@ -35,6 +39,6 @@ run_fixture() {
   }
 }
 
-@test "fixture: example.limit-100.js" {
-  run_fixture "$BATS_TEST_DIRNAME/fixture/limit/example.limit-100.js"
+@test "fixture: example.limit-255.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/limit/example.limit-255.js"
 }

@@ -38,6 +38,20 @@ export default [
           skipBigInt: false,
         },
       ],
+      'hex-under/octal-under': [
+        'error',
+        {
+          limit: 511,
+          skipBigInt: false,
+        },
+      ],
+      'hex-under/binary-under': [
+        'error',
+        {
+          limit: 15,
+          skipBigInt: false,
+        },
+      ],
     },
   },
 ];
