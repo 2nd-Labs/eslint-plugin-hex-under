@@ -3,20 +3,34 @@ const OCTAL_REGEX_BIGINT = /^0[oO]?[0-7_]+n$/;
 
 export default {
   meta: {
-    version: '0.1.0',
+    version: '0.1.1',
     type: 'suggestion',
     docs: {
       description: 'Ensures octal numbers do not exceed a limit.',
       recommended: false,
     },
+    defaultOptions: [
+      {
+        limit: 511,
+        skipBigInt: false,
+      },
+    ],
     fixable: 'code',
     schema: [
       {
         type: 'object',
         properties: {
-          limit: { type: 'integer', minimum: 0 },
-          skipBigInt: { type: 'boolean' },
+          limit: {
+            type: 'integer',
+            minimum: 0,
+            description: 'The maximum allowed value for octal literals.',
+          },
+          skipBigInt: {
+            type: 'boolean',
+            description: 'Whether to skip BigInt literals.',
+          },
         },
+        description: 'Options for octal-under rule',
         additionalProperties: false,
       },
     ],

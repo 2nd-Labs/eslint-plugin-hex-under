@@ -3,20 +3,34 @@ const BINARY_REGEX_BIGINT = /^0[bB][01_]+n$/;
 
 export default {
   meta: {
-    version: '0.1.0',
+    version: '0.1.1',
     type: 'suggestion',
     docs: {
       description: 'Ensures binary numbers do not exceed a limit.',
       recommended: false,
     },
+    defaultOptions: [
+      {
+        limit: 15,
+        skipBigInt: false,
+      },
+    ],
     fixable: 'code',
     schema: [
       {
         type: 'object',
         properties: {
-          limit: { type: 'integer', minimum: 0 },
-          skipBigInt: { type: 'boolean' },
+          limit: {
+            type: 'integer',
+            minimum: 0,
+            description: 'The maximum allowed value for binary literals.',
+          },
+          skipBigInt: {
+            type: 'boolean',
+            description: 'Whether to skip BigInt literals.',
+          },
         },
+        description: 'Options for binary-under rule',
         additionalProperties: false,
       },
     ],

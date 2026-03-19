@@ -24,11 +24,14 @@ export default {
           limit: {
             type: 'integer',
             minimum: 0,
+            description: 'The maximum allowed value for hexadecimal literals.',
           },
           skipBigInt: {
             type: 'boolean',
+            description: 'Whether to skip BigInt literals.',
           },
         },
+        description: 'Options for hex-under rule',
         additionalProperties: false,
       },
     ],
