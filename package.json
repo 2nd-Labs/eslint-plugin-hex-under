@@ -8,7 +8,7 @@
     "lint": "prettier . --check && eslint .",
     "test": "vitest run",
     "test:all": "npm run test && npm run test:bats",
-    "test:bats": "bats --print-output-on-failure test/bats/*.bats",
+    "test:bats": "bats --print-output-on-failure --abort --verbose-run test/bats/*.bats",
     "test:watch": "vitest"
   },
   "repository": "github:0xflotus/eslint-plugin-hex-under",
