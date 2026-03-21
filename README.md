@@ -63,6 +63,17 @@ const binary = 256;
 const octal = 256;
 ```
 
+If you want to disable all rules, you can paste a block comment at the very first line of the file.
+
+```js
+/* ignore-hex-under */
+
+// this all will be ignored
+const foo = 0xffff;
+
+const bar = 0b10100010101;
+```
+
 ## Integration
 
 ```sh
