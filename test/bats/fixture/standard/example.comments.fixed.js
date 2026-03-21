@@ -10,6 +10,9 @@ const hexFoo = 0xff0000; // ignore-hex-under
 // ignore-hex-under
 const hexBar = 0x1000000;
 
+const hex_fooBar = 0x1000000; // ignore-hex-under
+const hexFoo_Bar = 256;
+
 const hexFooBar = 256;
 
 const binaryFoo = 0b111111111111111111111111; // ignore-binary-under
