@@ -56,6 +56,7 @@ describe('hex-under rule', () => {
           '// ignore-hex-under\nconst foo = 0x100n;',
           '// ignore-hex-under\nconst foo = 0x100n; const bar = 0x100;',
           'const foo = 0x100n; const bar = 0x100; // ignore-hex-under',
+          '/* ignore-hex-under */\n\nconst foo = 0x100;\nconst bar = 0xfff;',
         ],
         invalid: [],
       });

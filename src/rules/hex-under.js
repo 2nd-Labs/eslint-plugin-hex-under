@@ -4,7 +4,7 @@ const HEX_REGEX_BIGINT = /^0[xX][0-9a-fA-F_]+n$/;
 export default {
   meta: {
     type: 'suggestion',
-    version: '0.6.0',
+    version: '0.7.0',
     defaultOptions: [
       {
         limit: 255,
@@ -48,6 +48,9 @@ export default {
         const raw = node.raw;
 
         const sourceCode = context.sourceCode;
+        if (sourceCode.lines[0] === '/* ignore-hex-under */') {
+          return;
+        }
         const line = node.loc.end.line;
         const ignore =
           sourceCode.lines[line - 2]?.startsWith('// ignore-hex-under') ||
