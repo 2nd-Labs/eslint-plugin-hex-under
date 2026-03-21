@@ -42,21 +42,15 @@ export default {
 
   create(context) {
     const [{ limit = 15, skipBigInt = false } = {}] = context.options;
-    let comments = [];
     return {
-      Program(node) {
-        comments = node.comments || [];
-      },
       'Literal[raw=/^0[bB][01_]+n?$/]'(node) {
         const raw = node.raw;
 
-        const ignore = comments.some((c) => {
-          const line = c.loc.end.line;
-          return (
-            (line === node.loc.start.line - 1 || line === node.loc.end.line) &&
-            c.value.trim() === 'ignore-binary-under'
-          );
-        });
+        const sourceCode = context.sourceCode;
+        const line = node.loc.end.line;
+        const ignore =
+          sourceCode.lines[line - 2]?.startsWith('// ignore-binary-under') ||
+          /\/\/\s(ignore-binary-under)/.test(sourceCode.lines[line - 1]);
         if (ignore) return;
 
         const isBigInt = BINARY_REGEX_BIGINT.test(raw);

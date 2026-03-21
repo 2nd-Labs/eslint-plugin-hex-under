@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { RuleTester } from 'eslint';
+import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/hex-under.js';
 
 const ruleTester = new RuleTester({
@@ -40,9 +40,22 @@ describe('hex-under rule', () => {
           'const foo = 0XF_f;',
           'const foo = 0xF_fn;',
           'const foo = 0XF_fn;',
+        ],
+        invalid: [],
+      });
+    });
 
-          '// ignore-hex-under\nconst foo = 0x100;',
+    it('valid cases - comments', () => {
+      expect.assertions(0);
+
+      ruleTester.run('hex-under', rule, {
+        valid: [
           'const foo = 0x100; // ignore-hex-under',
+          '// ignore-hex-under\nconst foo = 0x100;',
+          'const foo = 0x100n; // ignore-hex-under',
+          '// ignore-hex-under\nconst foo = 0x100n;',
+          '// ignore-hex-under\nconst foo = 0x100n; const bar = 0x100;',
+          'const foo = 0x100n; const bar = 0x100; // ignore-hex-under',
         ],
         invalid: [],
       });
@@ -77,6 +90,32 @@ describe('hex-under rule', () => {
           {
             code: 'const foo = -0X100n;\nconst bar = -0x100;',
             output: 'const foo = -256n;\nconst bar = -256;',
+            errors: 2,
+          },
+        ],
+      });
+    });
+
+    it('invalid cases - comments', () => {
+      expect.assertions(0);
+
+      ruleTester.run('hex-under', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const bar = 0x100; // ignore-hex-under\nconst foo = 0x100n;',
+            output: 'const bar = 0x100; // ignore-hex-under\nconst foo = 256n;',
+            errors: 1,
+          },
+          {
+            code: 'const bar = 0x100; // ignore-binary-under\nconst foo = 0x100n;',
+            output:
+              'const bar = 256; // ignore-binary-under\nconst foo = 256n;',
+            errors: 2,
+          },
+          {
+            code: 'const bar = 0x100; // ignore-octal-under\nconst foo = 0x100n;',
+            output: 'const bar = 256; // ignore-octal-under\nconst foo = 256n;',
             errors: 2,
           },
         ],

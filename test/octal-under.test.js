@@ -1,5 +1,5 @@
-import { describe, it, expect } from 'vitest';
 import { RuleTester } from 'eslint';
+import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/octal-under.js';
 
 const ruleTester = new RuleTester({
@@ -31,6 +31,22 @@ describe('octal-under rule', () => {
 
           '// ignore-octal-under\nconst foo = 0o1000;',
           'const foo = 0o1000; // ignore-octal-under',
+        ],
+        invalid: [],
+      });
+    });
+
+    it('valid cases - comments', () => {
+      expect.assertions(0);
+
+      ruleTester.run('octal-under', rule, {
+        valid: [
+          'const foo = 0o1000; // ignore-octal-under',
+          '// ignore-octal-under\nconst foo = 0o1000;',
+          'const foo = 0o1000n; // ignore-octal-under',
+          '// ignore-octal-under\nconst foo = 0o1000n;',
+          '// ignore-octal-under\nconst foo = 0o1000n; const bar = 0o1000;',
+          'const foo = 0o1000n; const bar = 0o1000; // ignore-octal-under',
         ],
         invalid: [],
       });
@@ -86,6 +102,33 @@ describe('octal-under rule', () => {
             code: 'const foo = -0O1_000n;',
             output: 'const foo = -512n;',
             errors: 1,
+          },
+        ],
+      });
+    });
+
+    it('invalid cases - comments', () => {
+      expect.assertions(0);
+
+      ruleTester.run('octal-under', rule, {
+        valid: [],
+        invalid: [
+          {
+            code: 'const bar = 0o1000; // ignore-octal-under\nconst foo = 0o1000n;',
+            output:
+              'const bar = 0o1000; // ignore-octal-under\nconst foo = 512n;',
+            errors: 1,
+          },
+          {
+            code: 'const bar = 0o1000; // ignore-binary-under\nconst foo = 0o1000n;',
+            output:
+              'const bar = 512; // ignore-binary-under\nconst foo = 512n;',
+            errors: 2,
+          },
+          {
+            code: 'const bar = 0o1000; // ignore-hex-under\nconst foo = 0o1000n;',
+            output: 'const bar = 512; // ignore-hex-under\nconst foo = 512n;',
+            errors: 2,
           },
         ],
       });
