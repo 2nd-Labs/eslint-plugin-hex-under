@@ -33,6 +33,7 @@ describe('binary-under rule', () => {
 
           '// ignore-binary-under\nconst foo = 0b10000;',
           'const foo = 0b10000; // ignore-binary-under',
+          '/* ignore-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
         ],
         invalid: [],
       });

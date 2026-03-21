@@ -12,8 +12,8 @@ run_fixture() {
   local input="$1"
   local filename fixture_name expected
 
-  filename="${input##*/}"        
-  fixture_name="${filename%.js}" 
+  filename="${input##*/}"
+  fixture_name="${filename%.js}"
   expected="$BATS_TEST_DIRNAME/fixture/standard/${fixture_name}.fixed.js"
 
   cp "$input" tmp/input.js
@@ -37,4 +37,8 @@ run_fixture() {
 
 @test "fixture: example.comments.js" {
   run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.js"
+}
+
+@test "fixture: example.comments.full.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.full.js"
 }

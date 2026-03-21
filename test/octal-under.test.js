@@ -31,6 +31,7 @@ describe('octal-under rule', () => {
 
           '// ignore-octal-under\nconst foo = 0o1000;',
           'const foo = 0o1000; // ignore-octal-under',
+          '/* ignore-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o7777n;',
         ],
         invalid: [],
       });

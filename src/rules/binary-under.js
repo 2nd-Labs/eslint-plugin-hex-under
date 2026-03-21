@@ -3,7 +3,7 @@ const BINARY_REGEX_BIGINT = /^0[bB][01_]+n$/;
 
 export default {
   meta: {
-    version: '0.2.0',
+    version: '0.3.0',
     type: 'suggestion',
     docs: {
       description: 'Ensures binary numbers do not exceed a limit.',
@@ -47,6 +47,9 @@ export default {
         const raw = node.raw;
 
         const sourceCode = context.sourceCode;
+        if (sourceCode.lines[0] === '/* ignore-hex-under */') {
+          return;
+        }
         const line = node.loc.end.line;
         const ignore =
           sourceCode.lines[line - 2]?.startsWith('// ignore-binary-under') ||
