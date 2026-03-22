@@ -3,7 +3,7 @@ const BINARY_REGEX_BIGINT = /^0[bB][01_]+n$/;
 
 export default {
   meta: {
-    version: '0.3.0',
+    version: '0.3.1',
     type: 'suggestion',
     docs: {
       description: 'Ensures binary numbers do not exceed a limit.',
@@ -47,7 +47,7 @@ export default {
         const raw = node.raw;
 
         const sourceCode = context.sourceCode;
-        if (sourceCode.lines[0] === '/* ignore-hex-under */') {
+        if (sourceCode.lines[0] === '/* ignore-all-hex-under */') {
           return;
         }
         const line = node.loc.end.line;

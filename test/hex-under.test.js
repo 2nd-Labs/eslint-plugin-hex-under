@@ -56,7 +56,7 @@ describe('hex-under rule', () => {
           '// ignore-hex-under\nconst foo = 0x100n;',
           '// ignore-hex-under\nconst foo = 0x100n; const bar = 0x100;',
           'const foo = 0x100n; const bar = 0x100; // ignore-hex-under',
-          '/* ignore-hex-under */\n\nconst foo = 0x100;\nconst bar = 0xfff;',
+          '/* ignore-all-hex-under */\n\nconst foo = 0x100;\nconst bar = 0xfff;',
         ],
         invalid: [],
       });
@@ -117,6 +117,12 @@ describe('hex-under rule', () => {
           {
             code: 'const bar = 0x100; // ignore-octal-under\nconst foo = 0x100n;',
             output: 'const bar = 256; // ignore-octal-under\nconst foo = 256n;',
+            errors: 2,
+          },
+          {
+            code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0x100;\nconst bar = 0x101;',
+            output:
+              '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 256;\nconst bar = 257;',
             errors: 2,
           },
         ],

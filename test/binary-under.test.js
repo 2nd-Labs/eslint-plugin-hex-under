@@ -30,10 +30,6 @@ describe('binary-under rule', () => {
 
           'const foo = 0b11_11n;',
           'const foo = 0B11_11n;',
-
-          '// ignore-binary-under\nconst foo = 0b10000;',
-          'const foo = 0b10000; // ignore-binary-under',
-          '/* ignore-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
         ],
         invalid: [],
       });
@@ -50,6 +46,8 @@ describe('binary-under rule', () => {
           '// ignore-binary-under\nconst foo = 0b1000n;',
           '// ignore-binary-under\nconst foo = 0b1000n; const bar = 0b1000;',
           'const foo = 0b1000n; const bar = 0b1000; // ignore-binary-under',
+
+          '/* ignore-all-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
         ],
         invalid: [],
       });
@@ -130,6 +128,12 @@ describe('binary-under rule', () => {
           {
             code: 'const bar = 0b10000; // ignore-hex-under\nconst foo = 0b10000n;',
             output: 'const bar = 16; // ignore-hex-under\nconst foo = 16n;',
+            errors: 2,
+          },
+          {
+            code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
+            output:
+              '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 16;\nconst bar = 17;',
             errors: 2,
           },
         ],
