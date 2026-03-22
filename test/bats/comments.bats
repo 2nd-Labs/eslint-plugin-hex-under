@@ -42,3 +42,11 @@ run_fixture() {
 @test "fixture: example.comments.full.js" {
   run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.full.js"
 }
+
+@test "fixture: example.comments.full.binary.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.full.binary.js"
+}
+
+@test "fixture: example.comments.full.octal.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.full.octal.js"
+}

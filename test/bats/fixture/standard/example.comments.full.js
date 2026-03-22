@@ -1,4 +1,4 @@
-/* ignore-hex-under */
+/* ignore-all-hex-under */
 
 const foo = 0o777777;
 
