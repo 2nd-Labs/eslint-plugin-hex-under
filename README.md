@@ -15,6 +15,7 @@ This ESLint plugin ensures that numeric literals written in non-decimal formats 
 ## When should I use this?
 
 Use this plugin if:
+
 - You care about code readability
 - Your team avoids "magic numbers"
 - You review low-level or bitwise-heavy code
@@ -127,10 +128,10 @@ export default [
 
 ## Configuration
 
-Option       | Type    | Default           | Description
--------------|---------|-------------------|--------------------------------
-`limit`      | number  | format-specific   | Maximum allowed value
-`skipBigInt` | boolean | false             | Ignore BigInt values
+| Option       | Type    | Default         | Description           |
+| ------------ | ------- | --------------- | --------------------- |
+| `limit`      | number  | format-specific | Maximum allowed value |
+| `skipBigInt` | boolean | false           | Ignore BigInt values  |
 
 ## Testing & Code Coverage
 
