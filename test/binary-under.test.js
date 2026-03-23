@@ -1,247 +1,276 @@
-import { RuleTester } from 'eslint';
+import { createRuleTester } from 'eslint-vitest-rule-tester';
 import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/binary-under.js';
 
-const ruleTester = new RuleTester({
-  languageOptions: {
-    ecmaVersion: 2025,
-    sourceType: 'module',
-  },
-});
+describe('hex-under/binary-under', () => {
+  const { valid, invalid } = createRuleTester({
+    name: 'hex-under/binary-under',
+    rule,
+    configs: {
+      languageOptions: {
+        parserOptions: {
+          ecmaVersion: 2025,
+          sourceType: 'module',
+        },
+      },
+    },
+  });
 
-describe('binary-under rule', () => {
-  describe('default options', () => {
-    it('valid cases', () => {
-      expect.assertions(0);
+  describe('default cases', () => {
+    it.each([
+      'const foo = 0b1111;',
+      'const foo = 0B1111;',
 
-      ruleTester.run('binary-under', rule, {
-        valid: [
-          'const foo = 0b1111;',
-          'const foo = 0B1111;',
+      'const foo = 0b1111n;',
+      'const foo = 0B1111n;',
 
-          'const foo = 0b1111n;',
-          'const foo = 0B1111n;',
+      'const foo = -0b1111;',
+      'const foo = -0B1111n;',
 
-          'const foo = -0b1111;',
-          'const foo = -0B1111n;',
+      'const foo = 0b11_11;',
+      'const foo = 0B11_11;',
 
-          'const foo = 0b11_11;',
-          'const foo = 0B11_11;',
+      'const foo = 0b11_11n;',
+      'const foo = 0B11_11n;',
+    ])('%s should be valid', async (testCase) => {
+      expect.hasAssertions();
 
-          'const foo = 0b11_11n;',
-          'const foo = 0B11_11n;',
-        ],
-        invalid: [],
+      const { result } = await valid({
+        code: testCase,
       });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
     });
 
-    it('valid cases - comments', () => {
-      expect.assertions(0);
+    it.each([
+      ['const foo = 0b1_0000_0000;', 'const foo = 256;'],
+      ['const foo = 0B1_0000_0000;', 'const foo = 256;'],
+      ['const foo = 0b100000000;', 'const foo = 256;'],
+      ['const foo = 0B100000000;', 'const foo = 256;'],
+      ['const foo = 0b1_0000_0000n;', 'const foo = 256n;'],
+      ['const foo = 0B1_0000_0000n;', 'const foo = 256n;'],
+      ['const foo = 0b100000000n;', 'const foo = 256n;'],
+      ['const foo = 0B100000000n;', 'const foo = 256n;'],
+      ['const foo = -0B100000000n;', 'const foo = -256n;'],
+    ])('%s should be invalid', async (testCase, output) => {
+      expect.hasAssertions();
 
-      ruleTester.run('binary-under', rule, {
-        valid: [
-          'const foo = 0b1000; // ignore-binary-under',
-          '// ignore-binary-under\nconst foo = 0b1000;',
-          'const foo = 0b1000n; // ignore-binary-under',
-          '// ignore-binary-under\nconst foo = 0b1000n;',
-          '// ignore-binary-under\nconst foo = 0b1000n; const bar = 0b1000;',
-          'const foo = 0b1000n; const bar = 0b1000; // ignore-binary-under',
-
-          '/* ignore-all-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
-
-          '// This should be ignored by binary-under rule because of the comment.\n\n/* ignore-binary-under */\n\nconst foo = 0b111111111111111111111111;\nconst bar = 0b1000000000000000000000000;',
-        ],
-        invalid: [],
+      const { result } = await invalid({
+        code: testCase,
+        errors: 1,
       });
-    });
 
-    it('invalid cases', () => {
-      expect.assertions(0);
-
-      ruleTester.run('binary-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const foo = 0b1_0000_0000;',
-            output: 'const foo = 256;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0B1_0000_0000;',
-            output: 'const foo = 256;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0b100000000;',
-            output: 'const foo = 256;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0B100000000;',
-            output: 'const foo = 256;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0b1_0000_0000n;',
-            output: 'const foo = 256n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0B1_0000_0000n;',
-            output: 'const foo = 256n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0b100000000n;',
-            output: 'const foo = 256n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0B100000000n;',
-            output: 'const foo = 256n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = -0B100000000n;',
-            output: 'const foo = -256n;',
-            errors: 1,
-          },
-        ],
-      });
-    });
-
-    it('invalid cases - comments', () => {
-      expect.assertions(0);
-
-      ruleTester.run('binary-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const bar = 0b10000; // ignore-binary-under\nconst foo = 0b10000n;',
-            output:
-              'const bar = 0b10000; // ignore-binary-under\nconst foo = 16n;',
-            errors: 1,
-          },
-          {
-            code: 'const bar = 0b10000; // ignore-octal-under\nconst foo = 0b10000n;',
-            output: 'const bar = 16; // ignore-octal-under\nconst foo = 16n;',
-            errors: 2,
-          },
-          {
-            code: 'const bar = 0b10000; // ignore-hex-under\nconst foo = 0b10000n;',
-            output: 'const bar = 16; // ignore-hex-under\nconst foo = 16n;',
-            errors: 2,
-          },
-          {
-            code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
-            output:
-              '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 16;\nconst bar = 17;',
-            errors: 2,
-          },
-          {
-            code: '// This should fail.\n/* ignore-octal-under */\n\n/* ignore-hex-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
-            output:
-              '// This should fail.\n/* ignore-octal-under */\n\n/* ignore-hex-under */\nconst foo = 16;\nconst bar = 17;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
-            errors: 2,
-          },
-        ],
-      });
+      expect(result.output).toBe(output);
+      expect(result.fixed).toBe(true);
     });
   });
 
-  describe('with custom limit (1)', () => {
-    it('valid cases', () => {
-      expect.assertions(0);
+  describe('default cases - comments', () => {
+    it('should be valid with "ignore-all-hex-under" block comment on the very first line', async () => {
+      expect.hasAssertions();
 
-      ruleTester.run('binary-under', rule, {
-        valid: [
-          { code: 'const foo = 0b1;', options: [{ limit: 1 }] },
-          { code: 'const foo = 0B1;', options: [{ limit: 1 }] },
-
-          { code: 'const foo = 0b1n;', options: [{ limit: 1 }] },
-          { code: 'const foo = 0B1n;', options: [{ limit: 1 }] },
-        ],
-        invalid: [],
+      const { result } = await valid({
+        code: '/* ignore-all-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
       });
+
+      expect(result.output).toBe(
+        '/* ignore-all-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
+      );
+      expect(result.fixed).toBe(false);
     });
 
-    it('invalid cases', () => {
-      expect.assertions(0);
+    it('should be valid with "ignore-binary-under" block comment', async () => {
+      expect.hasAssertions();
 
-      ruleTester.run('binary-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const foo = 0b10;',
-            output: 'const foo = 2;',
-            options: [{ limit: 1 }],
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0B10;',
-            output: 'const foo = 2;',
-            options: [{ limit: 1 }],
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0b10n;',
-            output: 'const foo = 2n;',
-            options: [{ limit: 1 }],
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0B10n;',
-            output: 'const foo = 2n;',
-            options: [{ limit: 1 }],
-            errors: 1,
-          },
-        ],
+      const { result } = await valid({
+        code: '// This should be ignored by binary-under rule because of the comment.\n\n/* ignore-binary-under */\n\nconst foo = 0b111111111111111111111111;\nconst bar = 0b1000000000000000000000000;',
       });
+
+      expect(result.output).toBe(
+        '// This should be ignored by binary-under rule because of the comment.\n\n/* ignore-binary-under */\n\nconst foo = 0b111111111111111111111111;\nconst bar = 0b1000000000000000000000000;',
+      );
+      expect(result.fixed).toBe(false);
+    });
+
+    it.each([
+      '// ignore-binary-under\nconst foo = 0b10000;',
+      '// ignore-binary-under\nconst foo = 0b10000n;',
+      '// ignore-binary-under\nconst foo = 0b10000n; const bar = 0b1000;',
+    ])('should be valid with comment above', async (testCase) => {
+      expect.hasAssertions();
+
+      const { result } = await valid({
+        code: testCase,
+      });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
+    });
+
+    it.each([
+      'const foo = 0b10000; // ignore-binary-under',
+      'const foo = 0b10000n; // ignore-binary-under',
+      'const foo = 0b10000n; const bar = 0b10000; // ignore-binary-under',
+    ])('should be valid with comment on the same line', async (testCase) => {
+      expect.hasAssertions();
+
+      const { result } = await valid({
+        code: testCase,
+      });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
+    });
+
+    it.each([
+      [
+        'ignore-binary-under',
+        1,
+        'const bar = 0b10000; // ignore-binary-under\nconst foo = 0b10000n;',
+        'const bar = 0b10000; // ignore-binary-under\nconst foo = 16n;',
+      ],
+      [
+        'ignore-octal-under',
+        2,
+        'const bar = 0b10000; // ignore-octal-under\nconst foo = 0b10000n;',
+        'const bar = 16; // ignore-octal-under\nconst foo = 16n;',
+      ],
+      [
+        'ignore-hex-under',
+        2,
+        'const bar = 0b10000; // ignore-hex-under\nconst foo = 0b10000n;',
+        'const bar = 16; // ignore-hex-under\nconst foo = 16n;',
+      ],
+    ])(
+      'should fail with ignore rule %s and %d error(s)',
+      async (_rule, errors, testCase, output) => {
+        expect.hasAssertions();
+
+        const { result } = await invalid({
+          code: testCase,
+          errors: errors,
+        });
+
+        expect(result.output).toBe(output);
+        expect(result.fixed).toBe(true);
+      },
+    );
+
+    it('should fail with "ignore-all-hex-under" block comment not on the very first line', async () => {
+      expect.hasAssertions();
+
+      const { result } = await invalid({
+        code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0b10000;\nconst bar = 0b10001;',
+        errors: 2,
+      });
+
+      expect(result.output).toBe(
+        '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 16;\nconst bar = 17;',
+      );
+      expect(result.fixed).toBe(true);
+    });
+
+    it('should fail with "ignore-hex-under" and "ignore-octal-under" block comments', async () => {
+      expect.hasAssertions();
+
+      const { result } = await invalid({
+        code: '// This should fail.\n/* ignore-octal-under */\n\n/* ignore-hex-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
+        errors: 2,
+      });
+
+      expect(result.output).toBe(
+        '// This should fail.\n/* ignore-octal-under */\n\n/* ignore-hex-under */\nconst foo = 16;\nconst bar = 17;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
+      );
+      expect(result.fixed).toBe(true);
     });
   });
 
-  describe('with skipBigInt: true', () => {
-    it('valid cases', () => {
-      expect.assertions(0);
+  describe('with custom limit', () => {
+    it.each([
+      ['const foo = 0b1;', 1],
+      ['const foo = 0B1;', 1],
+      ['const foo = 0b1n;', 1],
+      ['const foo = 0B1n;', 1],
+      ['const foo = 0b1111;', 15],
+      ['const foo = 0b1111_1111', 255],
+    ])('%s should be valid', async (testCase, limit) => {
+      expect.hasAssertions();
 
-      ruleTester.run('binary-under', rule, {
-        valid: [
-          { code: 'const foo = 0b1111;', options: [{ skipBigInt: true }] },
-          { code: 'const foo = 0B1111;', options: [{ skipBigInt: true }] },
-
-          {
-            code: 'const foo = 0b100000000n;',
-            options: [{ skipBigInt: true }],
-          },
-          {
-            code: 'const foo = 0B100000000n;',
-            options: [{ skipBigInt: true }],
-          },
-        ],
-        invalid: [],
+      const { result } = await valid({
+        code: testCase,
+        options: {
+          limit: limit,
+        },
       });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
     });
 
-    it('invalid cases', () => {
-      expect.assertions(0);
+    it.each([
+      ['const foo = 0b10;', 'const foo = 2;', 1],
+      ['const foo = 0B10;', 'const foo = 2;', 1],
+      ['const foo = 0b10n;', 'const foo = 2n;', 1],
+      ['const foo = 0B10n;', 'const foo = 2n;', 1],
+    ])('%s should fail with limit %d', async (testCase, output, limit) => {
+      expect.hasAssertions();
 
-      ruleTester.run('binary-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const foo = 0b100000000n;',
-            output: 'const foo = 256n;',
-            options: [{ skipBigInt: false }],
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0B100000000n;',
-            output: 'const foo = 256n;',
-            options: [{ skipBigInt: false }],
-            errors: 1,
-          },
-        ],
+      const { result } = await invalid({
+        code: testCase,
+        options: {
+          limit: limit,
+        },
+        errors: 1,
       });
+
+      expect(result.output).toBe(output);
+      expect(result.fixed).toBe(true);
     });
+  });
+
+  describe('with option skipBigInt', () => {
+    it.each([
+      ['const foo = 0b1111;', true],
+      ['const foo = 0B1111;', true],
+      ['const foo = 0b100000000n;', true],
+      ['const foo = 0B100000000n;', true],
+    ])(
+      '%s should be valid with skipBigInt=%s',
+      async (testCase, skipBigInt) => {
+        expect.hasAssertions();
+
+        const { result } = await valid({
+          code: testCase,
+          options: {
+            skipBigInt: skipBigInt,
+          },
+        });
+
+        expect(result.output).toBe(testCase);
+        expect(result.fixed).toBe(false);
+      },
+    );
+
+    it.each([
+      ['const foo = 0b100000000n;', 'const foo = 256n;', false],
+      ['const foo = 0B100000000n;', 'const foo = 256n;', false],
+    ])(
+      '%s should fail with skipBigInt=false',
+      async (testCase, output, skipBigInt) => {
+        expect.hasAssertions();
+
+        const { result } = await invalid({
+          code: testCase,
+          options: {
+            skipBigInt: skipBigInt,
+          },
+          errors: 1,
+        });
+
+        expect(result.output).toBe(output);
+        expect(result.fixed).toBe(true);
+      },
+    );
   });
 });
