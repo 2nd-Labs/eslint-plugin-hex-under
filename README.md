@@ -4,7 +4,7 @@ Sometimes it's really hard for humans to read hexadecimal numbers and know the e
 
 ## hex-under
 
-This ESLint plugin proves, if you use hexadecimal numbers in your code, that its value is less than or equal a specified value (default: 255). If you use a hexadecimal number greater than this specified value, it will be transformed to its decimal value.
+This ESLint plugin proves, if you use hexadecimal (or octal or binary) numbers in your code, that its value is less than or equal a specified value (default: `255` for hexadecimal, `15` for binary and `511` for octal). If you use a hexadecimal number greater than this specified value, it will be transformed to its decimal value.
 
 ### Example
 
