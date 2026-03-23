@@ -30,7 +30,7 @@
     "@vitest/coverage-v8": "4.1.0",
     "@vitest/eslint-plugin": "1.6.12",
     "bats": "1.13.0",
-    "eslint": "10.0.3",
+    "eslint": "10.1.0",
     "eslint-plugin-eslint-plugin": "7.3.2",
     "prettier": "3.8.1",
     "tinyexec": "1.0.4",
