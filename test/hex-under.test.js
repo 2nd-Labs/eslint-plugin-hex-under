@@ -42,10 +42,15 @@ describe('hex-under/hex-under', () => {
       'const foo = 0XF_f;',
       'const foo = 0xF_fn;',
       'const foo = 0XF_fn;',
-    ])('%s should be valid', (testCase) => {
+    ])('%s should be valid', async (testCase) => {
       expect.hasAssertions();
 
-      valid(testCase);
+      const { result } = await valid({
+        code: testCase,
+      });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
     });
 
     it.each(['const foo = 0x100;', 'const foo = 0X100;'])(
@@ -250,55 +255,55 @@ describe('hex-under/hex-under', () => {
       expect(result.output).toBe(output);
       expect(result.fixed).toBe(true);
     });
+  });
 
-    describe('with option "skipBigInt"', () => {
-      it.each([
-        ['const foo = 0xff;', true],
-        ['const foo = 0Xff;', true],
-        ['const foo = 0xffffn;', true],
-        ['const foo = 0Xffffn;', true],
-        ['const foo = 0xFF;', true],
-        ['const foo = 0XFF;', true],
-        ['const foo = 0xFFFFn;', true],
-        ['const foo = 0XFFFFn;', true],
-        ['const foo = 0xff_ffn', true],
-        ['const foo = 0xFfn', false],
-        ['const foo = 0xFf_Ffn', true],
-        ['const foo = 0xabn', false],
-      ])(
-        '%s should be valid with skipBigInt=%s',
-        async (testCase, skipBigInt) => {
-          expect.hasAssertions();
-
-          const { result } = await valid({
-            code: testCase,
-            options: {
-              skipBigInt: skipBigInt,
-            },
-          });
-
-          expect(result.output).toBe(testCase);
-          expect(result.fixed).toBe(false);
-        },
-      );
-    });
-
+  describe('with option "skipBigInt"', () => {
     it.each([
-      ['const foo = 0x100n;', 'const foo = 256n;'],
-      ['const foo = 0X100n;', 'const foo = 256n;'],
-    ])('%s should fail with skipBigInt=false', async (testCase, output) => {
-      expect.hasAssertions();
+      ['const foo = 0xff;', true],
+      ['const foo = 0Xff;', true],
+      ['const foo = 0xffffn;', true],
+      ['const foo = 0Xffffn;', true],
+      ['const foo = 0xFF;', true],
+      ['const foo = 0XFF;', true],
+      ['const foo = 0xFFFFn;', true],
+      ['const foo = 0XFFFFn;', true],
+      ['const foo = 0xff_ffn', true],
+      ['const foo = 0xFfn', false],
+      ['const foo = 0xFf_Ffn', true],
+      ['const foo = 0xabn', false],
+    ])(
+      '%s should be valid with skipBigInt=%s',
+      async (testCase, skipBigInt) => {
+        expect.hasAssertions();
 
-      const { result } = await invalid({
-        code: testCase,
-        options: {
-          skipBigInt: false,
-        },
-        errors: 1,
-      });
+        const { result } = await valid({
+          code: testCase,
+          options: {
+            skipBigInt: skipBigInt,
+          },
+        });
 
-      expect(result.output).toBe(output);
-      expect(result.fixed).toBe(true);
+        expect(result.output).toBe(testCase);
+        expect(result.fixed).toBe(false);
+      },
+    );
+  });
+
+  it.each([
+    ['const foo = 0x100n;', 'const foo = 256n;'],
+    ['const foo = 0X100n;', 'const foo = 256n;'],
+  ])('%s should fail with skipBigInt=false', async (testCase, output) => {
+    expect.hasAssertions();
+
+    const { result } = await invalid({
+      code: testCase,
+      options: {
+        skipBigInt: false,
+      },
+      errors: 1,
     });
+
+    expect(result.output).toBe(output);
+    expect(result.fixed).toBe(true);
   });
 });
