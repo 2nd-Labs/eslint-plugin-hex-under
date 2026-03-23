@@ -3,7 +3,7 @@ const OCTAL_REGEX_BIGINT = /^0[oO]?[0-7_]+n$/;
 
 export default {
   meta: {
-    version: '0.3.1',
+    version: '0.4.0',
     type: 'suggestion',
     docs: {
       description: 'Ensures octal numbers do not exceed a limit.',

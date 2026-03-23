@@ -4,7 +4,7 @@ const HEX_REGEX_BIGINT = /^0[xX][0-9a-fA-F_]+n$/;
 export default {
   meta: {
     type: 'suggestion',
-    version: '0.7.1',
+    version: '0.8.0',
     defaultOptions: [
       {
         limit: 255,
