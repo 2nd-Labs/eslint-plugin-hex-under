@@ -18,10 +18,13 @@
     "node": ">=22"
   },
   "keywords": [
+    "binary",
     "eslint",
     "eslint-plugin",
-    "lint",
     "hex",
+    "hexadecimal",
+    "lint",
+    "octal",
     "static-analysis"
   ],
   "license": "MIT",
