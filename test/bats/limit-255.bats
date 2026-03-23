@@ -12,8 +12,8 @@ run_fixture() {
   local input="$1"
   local filename fixture_name expected
 
-  filename="${input##*/}"        
-  fixture_name="${filename%.js}" 
+  filename="${input##*/}"
+  fixture_name="${filename%.js}"
   expected="$BATS_TEST_DIRNAME/fixture/limit/${fixture_name}.fixed.js"
 
   cp "$input" tmp/input.js
@@ -22,7 +22,8 @@ run_fixture() {
     --rule "'hex-under/hex-under': ['error', { limit: 255 }]" \
     --rule "'hex-under/octal-under': ['error', { limit: 255 }]" \
     --rule "'hex-under/binary-under': ['error', { limit: 255 }]" \
-    --fix tmp/input.js
+    --fix tmp/input.js \
+    --config test/bats/eslint.config.js
   if [ "$status" -ne 0 ]; then
     echo "ESLint failed for $fixture_name"
     echo "$output"

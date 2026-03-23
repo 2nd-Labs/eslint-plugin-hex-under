@@ -19,7 +19,8 @@ teardown() {
   run npx eslint "$ORIGINAL_FILE" \
     --rule "'hex-under/octal-under': 'error'" \
     --parser-options '{ "ecmaVersion": 2025, "sourceType": "script" }' \
-    --fix 
+    --fix \
+    --config test/bats/eslint.config.js
 
   cp "$ORIGINAL_FILE" "$FIXED_FILE"
 
