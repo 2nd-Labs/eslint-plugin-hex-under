@@ -1,10 +1,23 @@
 # eslint-plugin-hex-under
 
-Sometimes it's really hard for humans to read hexadecimal numbers and know the exact decimal value.
+Improve readability by enforcing limits on non-decimal numeric literals (hex, binary, octal).
+
+This plugin helps prevent hard-to-read numeric literals by automatically converting large values into their decimal representation or raising an error.
+
+## Why?
+
+Numeric literals like `0xfff` or `0b101010101` are compact, but often hard to read and reason about.
 
 ## hex-under
 
 This ESLint plugin ensures that numeric literals written in non-decimal formats (hexadecimal, binary, or octal) do not exceed a specified maximum value. By default, the limit corresponds to the largest commonly used value for each format (`255` for hexadecimal, `15` for binary, and `511` for octal). Values exceeding the limit are automatically converted to their decimal representation.
+
+## When should I use this?
+
+Use this plugin if:
+- You care about code readability
+- Your team avoids "magic numbers"
+- You review low-level or bitwise-heavy code
 
 ### Example
 
@@ -77,12 +90,12 @@ const bar = 0b10100010101;
 Or you disable every rule separately with a block comment before the code, e.g.:
 
 ```js
-// This sould be ignore all hex numbers but not octal or binary numbers.
+// This should be ignore all hex numbers but not octal or binary numbers.
 
 /* ignore-hex-under */
 
 const hex = 0x100; // This should stay 0x100
-const octal = 0o1000; // This sould be fixed to 512
+const octal = 0o1000; // This should be fixed to 512
 const binary = 0b10000; // This should be fixed to 16
 ```
 
@@ -111,6 +124,13 @@ export default [
   },
 ];
 ```
+
+## Configuration
+
+Option       | Type    | Default           | Description
+-------------|---------|-------------------|--------------------------------
+`limit`      | number  | format-specific   | Maximum allowed value
+`skipBigInt` | boolean | false             | Ignore BigInt values
 
 ## Testing & Code Coverage
 
