@@ -74,6 +74,18 @@ const foo = 0xffff;
 const bar = 0b10100010101;
 ```
 
+Or you disable every rule separately with a block comment before the code, e.g.:
+
+```js
+// This sould be ignore all hex numbers but not octal or binary numbers.
+
+/* ignore-hex-under */
+
+const hex = 0x100; // This should stay 0x100
+const octal = 0o1000; // This sould be fixed to 512
+const binary = 0b10000; // This should be fixed to 16
+```
+
 ## Integration
 
 ```sh
