@@ -1,6 +1,7 @@
 'use strict';
 
 import js from '@eslint/js';
+import json from '@eslint/json';
 import vitest from '@vitest/eslint-plugin';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import plugin from './src/eslint-plugin-hex-under.js';
@@ -57,5 +58,33 @@ export default [
       ],
     },
   },
-  eslintPlugin.configs.recommended,
+  {
+    ...eslintPlugin.configs.recommended,
+    rules: {
+      'eslint-plugin/no-meta-replaced-by': 'off',
+    },
+  },
+  {
+    plugins: {
+      json,
+    },
+    files: ['**/*.json'],
+    ignores: ['package-lock.json'],
+    language: 'json/json',
+    rules: {
+      'json/no-duplicate-keys': 'error',
+      'json/sort-keys': 'error',
+    },
+  },
+  {
+    plugins: {
+      json,
+    },
+    files: ['**/*.jsonc', '.vscode/*.json'],
+    language: 'json/jsonc',
+    rules: {
+      'json/no-duplicate-keys': 'error',
+      'json/sort-keys': 'error',
+    },
+  },
 ];
