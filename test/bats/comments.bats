@@ -50,3 +50,19 @@ run_fixture() {
 @test "fixture: example.comments.full.octal.js" {
   run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.full.octal.js"
 }
+
+@test "fixture: example.comments.binary.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.binary.js"
+}
+
+@test "fixture: example.comments.binary-and-hex.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.binary-and-hex.js"
+}
+
+@test "fixture: example.comments.hex.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.hex.js"
+}
+
+@test "fixture: example.comments.octal.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.comments.octal.js"
+}

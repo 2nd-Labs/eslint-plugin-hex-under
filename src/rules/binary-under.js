@@ -50,6 +50,22 @@ export default {
         if (sourceCode.lines[0] === '/* ignore-all-hex-under */') {
           return;
         }
+
+        const comments = sourceCode.getAllComments();
+        const firstNode = sourceCode.ast.body[0];
+        const commentsBeforeCode = comments.filter((comment) => {
+          return comment.range[1] <= firstNode.range[0];
+        });
+        if (
+          commentsBeforeCode.some(
+            (comment) =>
+              comment.type === 'Block' &&
+              comment.value.trim() === 'ignore-binary-under',
+          )
+        ) {
+          return;
+        }
+
         const line = node.loc.end.line;
         const ignore =
           sourceCode.lines[line - 2]?.startsWith('// ignore-binary-under') ||
