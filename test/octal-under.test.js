@@ -2,7 +2,7 @@ import { createRuleTester } from 'eslint-vitest-rule-tester';
 import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/octal-under.js';
 
-describe('hex-under/binary-under', () => {
+describe('hex-under/octal-under', () => {
   const { valid, invalid } = createRuleTester({
     name: 'hex-under/octal-under',
     rule,
