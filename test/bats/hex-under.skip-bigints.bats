@@ -12,13 +12,13 @@ run_fixture() {
   local input="$1"
   local filename fixture_name expected
 
-  filename="${input##*/}"        
-  fixture_name="${filename%.js}" 
+  filename="${input##*/}"
+  fixture_name="${filename%.js}"
   expected="$BATS_TEST_DIRNAME/fixture/skip-bigints/${fixture_name}.fixed.js"
 
   cp "$input" tmp/input.js
 
-  run npx eslint --rule "'hex-under/hex-under': ['error', { skipBigInt: true }]" --fix tmp/input.js
+  run npx eslint --rule "'hex-under/hex-under': ['error', { skipBigInt: true }]" --fix tmp/input.js --config test/bats/eslint.config.js
   if [ "$status" -ne 0 ]; then
     echo "ESLint failed for $fixture_name"
     echo "$output"
