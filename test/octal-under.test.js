@@ -1,266 +1,301 @@
-import { RuleTester } from 'eslint';
+import { createRuleTester } from 'eslint-vitest-rule-tester';
 import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/octal-under.js';
 
-const ruleTester = new RuleTester({
-  languageOptions: {
-    ecmaVersion: 2025,
-    sourceType: 'module',
-  },
-});
+describe('hex-under/binary-under', () => {
+  const { valid, invalid } = createRuleTester({
+    name: 'hex-under/octal-under',
+    rule,
+    configs: {
+      languageOptions: {
+        parserOptions: {
+          ecmaVersion: 2025,
+          sourceType: 'module',
+        },
+      },
+    },
+  });
 
-describe('octal-under rule', () => {
-  describe('default options', () => {
-    it('valid cases', () => {
-      expect.assertions(0);
+  describe('default cases', () => {
+    it.each([
+      'const foo = 0o777;',
+      'const foo = 0O777;',
+      'const foo = 0o777n;',
+      'const foo = 0O777n;',
 
-      ruleTester.run('octal-under', rule, {
-        valid: [
-          'const foo = 0o777;',
-          'const foo = 0O777;',
-          'const foo = 0o777n;',
-          'const foo = 0O777n;',
+      'const foo = -0O777;',
+      'const foo = -0o777n;',
 
-          'const foo = -0O777;',
-          'const foo = -0o777n;',
+      'const foo = 0o7_77;',
+      'const foo = 0O7_77;',
+      'const foo = 0o7_77n;',
+      'const foo = 0O7_77n;',
+    ])('%s should be valid', async (testCase) => {
+      expect.hasAssertions();
 
-          'const foo = 0o7_77;',
-          'const foo = 0O7_77;',
-          'const foo = 0o7_77n;',
-          'const foo = 0O7_77n;',
-        ],
-        invalid: [],
+      const { result } = await valid({
+        code: testCase,
       });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
     });
 
-    it('valid cases - comments', () => {
-      expect.assertions(0);
+    it.each([
+      ['const foo = 0o1000;', 'const foo = 512;'],
+      ['const foo = 0O1000;', 'const foo = 512;'],
+      ['const foo = 0o1000n;', 'const foo = 512n;'],
+      ['const foo = 0O1000n;', 'const foo = 512n;'],
+      ['const foo = 0o1_000;', 'const foo = 512;'],
+      ['const foo = 0O1_000;', 'const foo = 512;'],
+      ['const foo = 0o1_000n;', 'const foo = 512n;'],
+      ['const foo = 0O1_000n;', 'const foo = 512n;'],
+      ['const foo = -0O1_000n;', 'const foo = -512n;'],
+    ])('%s should be invalid', async (testCase, output) => {
+      expect.hasAssertions();
 
-      ruleTester.run('octal-under', rule, {
-        valid: [
-          'const foo = 0o1000; // ignore-octal-under',
-          '// ignore-octal-under\nconst foo = 0o1000;',
-          'const foo = 0o1000n; // ignore-octal-under',
-          '// ignore-octal-under\nconst foo = 0o1000n;',
-          '// ignore-octal-under\nconst foo = 0o1000n; const bar = 0o1000;',
-          'const foo = 0o1000n; const bar = 0o1000; // ignore-octal-under',
-
-          '/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o7777n;',
-
-          '// This should be ignored by octal-under rule because of the comment.\n\n/* ignore-octal-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
-        ],
-        invalid: [],
+      const { result } = await invalid({
+        code: testCase,
+        errors: 1,
       });
+
+      expect(result.output).toBe(output);
+      expect(result.fixed).toBe(true);
+    });
+  });
+
+  describe('default cases - comments', () => {
+    it('should be valid with "ignore-all-hex-under" block comment on the very first line', async () => {
+      expect.hasAssertions();
+
+      const { result } = await valid({
+        code: '/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o7777n;',
+      });
+
+      expect(result.output).toBe(
+        '/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o7777n;',
+      );
+      expect(result.fixed).toBe(false);
     });
 
-    it('invalid cases', () => {
-      expect.assertions(0);
+    it('should be valid with "ignore-octal-under" block comment', async () => {
+      expect.hasAssertions();
 
-      ruleTester.run('octal-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const foo = 0o1000;',
-            output: 'const foo = 512;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0O1000;',
-            output: 'const foo = 512;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0o1000n;',
-            output: 'const foo = 512n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0O1000n;',
-            output: 'const foo = 512n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0o1_000;',
-            output: 'const foo = 512;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0O1_000;',
-            output: 'const foo = 512;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0o1_000n;',
-            output: 'const foo = 512n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0O1_000n;',
-            output: 'const foo = 512n;',
-            errors: 1,
-          },
-          {
-            code: 'const foo = -0O1_000n;',
-            output: 'const foo = -512n;',
-            errors: 1,
-          },
-        ],
+      const { result } = await valid({
+        code: '// This should be ignored by octal-under rule because of the comment.\n\n/* ignore-octal-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
       });
+
+      expect(result.output).toBe(
+        '// This should be ignored by octal-under rule because of the comment.\n\n/* ignore-octal-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
+      );
+      expect(result.fixed).toBe(false);
     });
 
-    it('invalid cases - comments', () => {
-      expect.assertions(0);
+    it.each([
+      '// ignore-octal-under\nconst foo = 0o1000;',
+      '// ignore-octal-under\nconst foo = 0o1000n;',
+      '// ignore-octal-under\nconst foo = 0o1000n; const bar = 0o1000;',
+    ])('should be valid with comment above', async (testCase) => {
+      expect.hasAssertions();
 
-      ruleTester.run('octal-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const bar = 0o1000; // ignore-octal-under\nconst foo = 0o1000n;',
-            output:
-              'const bar = 0o1000; // ignore-octal-under\nconst foo = 512n;',
-            errors: 1,
-          },
-          {
-            code: 'const bar = 0o1000; // ignore-binary-under\nconst foo = 0o1000n;',
-            output:
-              'const bar = 512; // ignore-binary-under\nconst foo = 512n;',
-            errors: 2,
-          },
-          {
-            code: 'const bar = 0o1000; // ignore-hex-under\nconst foo = 0o1000n;',
-            output: 'const bar = 512; // ignore-hex-under\nconst foo = 512n;',
-            errors: 2,
-          },
-          {
-            code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
-            output:
-              '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 512;\nconst bar = 513;',
-            errors: 2,
-          },
-          {
-            code: '// This should fail.\n/* ignore-hex-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
-            output:
-              '// This should fail.\n/* ignore-hex-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 512;',
-            errors: 1,
-          },
-        ],
+      const { result } = await valid({
+        code: testCase,
       });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
+    });
+
+    it.each([
+      'const foo = 0o1000; // ignore-octal-under',
+      'const foo = 0o1000n; // ignore-octal-under',
+      'const foo = 0o1000n; const bar = 0o1000; // ignore-octal-under',
+    ])('should be valid with comment on the same line', async (testCase) => {
+      expect.hasAssertions();
+
+      const { result } = await valid({
+        code: testCase,
+      });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
+    });
+
+    it.each([
+      [
+        'ignore-octal-under',
+        1,
+        'const bar = 0o1000; // ignore-octal-under\nconst foo = 0o1000n;',
+        'const bar = 0o1000; // ignore-octal-under\nconst foo = 512n;',
+      ],
+      [
+        'ignore-binary-under',
+        2,
+        'const bar = 0o1000; // ignore-binary-under\nconst foo = 0o1000n;',
+        'const bar = 512; // ignore-binary-under\nconst foo = 512n;',
+      ],
+      [
+        'ignore-hex-under',
+        2,
+        'const bar = 0o1000; // ignore-hex-under\nconst foo = 0o1000n;',
+        'const bar = 512; // ignore-hex-under\nconst foo = 512n;',
+      ],
+    ])(
+      'should fail with ignore rule %s and %d error(s)',
+      async (_rule, errors, testCase, output) => {
+        expect.hasAssertions();
+
+        const { result } = await invalid({
+          code: testCase,
+          errors: errors,
+        });
+
+        expect(result.output).toBe(output);
+        expect(result.fixed).toBe(true);
+      },
+    );
+
+    it('should fail with "ignore-all-hex-under" block comment not on the very first line', async () => {
+      expect.hasAssertions();
+
+      const { result } = await invalid({
+        code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
+        errors: 2,
+      });
+
+      expect(result.output).toBe(
+        '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 512;\nconst bar = 513;',
+      );
+      expect(result.fixed).toBe(true);
+    });
+
+    it('should fail with "ignore-hex-under" and "ignore-binary-under" block comments', async () => {
+      expect.hasAssertions();
+
+      const { result } = await invalid({
+        code: '// This should fail.\n/* ignore-hex-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
+        errors: 1,
+      });
+
+      expect(result.output).toBe(
+        '// This should fail.\n/* ignore-hex-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 512;',
+      );
+      expect(result.fixed).toBe(true);
     });
   });
 
   describe('old style octals', () => {
-    it('valid cases', () => {
-      expect.assertions(0);
-
-      const oldRuleTester = new RuleTester({
+    const { valid: validOld } = createRuleTester({
+      name: 'hex-under/octal-under',
+      rule,
+      configs: {
         languageOptions: {
           ecmaVersion: 2025,
           sourceType: 'script',
         },
+      },
+    });
+
+    it.each([
+      'const foo = 0777;',
+      'const foo = 0101234;',
+      'const foo = 028395;',
+    ])('should be valid with old style octal literal', async (testCase) => {
+      expect.hasAssertions();
+
+      const { result } = await validOld({
+        code: testCase,
       });
 
-      oldRuleTester.run('octal-under', rule, {
-        valid: ['const foo = 0777;'],
-        invalid: [],
-      });
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
     });
   });
 
-  describe('with custom limit (7)', () => {
-    it('valid cases', () => {
-      expect.assertions(0);
+  describe('with custom limit', () => {
+    it.each([
+      ['const foo = 0o7;', 7],
+      ['const foo = 0O7;', 7],
+      ['const foo = 0o7n;', 7],
+      ['const foo = 0O7n;', 7],
+      ['const foo = 0o77_7', 511],
+    ])('%s should be valid', async (testCase, limit) => {
+      expect.hasAssertions();
 
-      ruleTester.run('octal-under', rule, {
-        valid: [
-          { code: 'const foo = 0o7;', options: [{ limit: 7 }] },
-          { code: 'const foo = 0O7;', options: [{ limit: 7 }] },
-
-          { code: 'const foo = 0o7n;', options: [{ limit: 7 }] },
-          { code: 'const foo = 0O7n;', options: [{ limit: 7 }] },
-        ],
-        invalid: [],
+      const { result } = await valid({
+        code: testCase,
+        options: {
+          limit: limit,
+        },
       });
+
+      expect(result.output).toBe(testCase);
+      expect(result.fixed).toBe(false);
     });
 
-    it('invalid cases', () => {
-      expect.assertions(0);
+    it.each([
+      ['const foo = 0o10;', 'const foo = 8;', 7],
+      ['const foo = 0O10;', 'const foo = 8;', 7],
+      ['const foo = 0o10n;', 'const foo = 8n;', 7],
+      ['const foo = 0O10n;', 'const foo = 8n;', 7],
+    ])('%s should fail with limit %d', async (testCase, output, limit) => {
+      expect.hasAssertions();
 
-      ruleTester.run('octal-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const foo = 0o10;',
-            output: 'const foo = 8;',
-            options: [{ limit: 7 }],
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0O10;',
-            output: 'const foo = 8;',
-            options: [{ limit: 7 }],
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0o10n;',
-            output: 'const foo = 8n;',
-            options: [{ limit: 7 }],
-            errors: 1,
-          },
-          {
-            code: 'const foo = 0O10n;',
-            output: 'const foo = 8n;',
-            options: [{ limit: 7 }],
-            errors: 1,
-          },
-        ],
+      const { result } = await invalid({
+        code: testCase,
+        options: {
+          limit: limit,
+        },
+        errors: 1,
       });
+
+      expect(result.output).toBe(output);
+      expect(result.fixed).toBe(true);
     });
   });
 
-  describe('with skipBigInt: true', () => {
-    it('valid cases', () => {
-      expect.assertions(0);
+  describe('with option skipBigInt', () => {
+    it.each([
+      ['const foo = 0o777;', true],
+      ['const foo = 0O777;', true],
+      ['const foo = 0o1000n;', true],
+      ['const foo = 0O1000n;', true],
+    ])(
+      '%s should be valid with skipBigInt=%s',
+      async (testCase, skipBigInt) => {
+        expect.hasAssertions();
 
-      ruleTester.run('octal-under', rule, {
-        valid: [
-          { code: 'const foo = 0o777;', options: [{ skipBigInt: true }] },
-          { code: 'const foo = 0O777;', options: [{ skipBigInt: true }] },
-
-          { code: 'const foo = 0o1000n;', options: [{ skipBigInt: true }] },
-          { code: 'const foo = 0O1000n;', options: [{ skipBigInt: true }] },
-        ],
-        invalid: [],
-      });
-    });
-
-    it('invalid cases', () => {
-      expect.assertions(0);
-
-      ruleTester.run('octal-under', rule, {
-        valid: [],
-        invalid: [
-          {
-            code: 'const foo = 0o1000n;',
-            output: 'const foo = 512n;',
-            options: [
-              {
-                skipBigInt: false,
-              },
-            ],
-            errors: 1,
+        const { result } = await valid({
+          code: testCase,
+          options: {
+            skipBigInt: skipBigInt,
           },
-          {
-            code: 'const foo = 0O1000n;',
-            output: 'const foo = 512n;',
-            options: [
-              {
-                skipBigInt: false,
-              },
-            ],
-            errors: 1,
+        });
+
+        expect(result.output).toBe(testCase);
+        expect(result.fixed).toBe(false);
+      },
+    );
+
+    it.each([
+      ['const foo = 0o1000n;', 'const foo = 512n;', false],
+      ['const foo = 0O1000n;', 'const foo = 512n;', false],
+    ])(
+      '%s should fail with skipBigInt=false',
+      async (testCase, output, skipBigInt) => {
+        expect.hasAssertions();
+
+        const { result } = await invalid({
+          code: testCase,
+          options: {
+            skipBigInt: skipBigInt,
           },
-        ],
-      });
-    });
+          errors: 1,
+        });
+
+        expect(result.output).toBe(output);
+        expect(result.fixed).toBe(true);
+      },
+    );
   });
 });
