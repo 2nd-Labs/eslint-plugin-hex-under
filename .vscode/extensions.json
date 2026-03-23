@@ -1,6 +1,7 @@
 {
   "recommendations": [
     "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
     "jetmartin.bats",
     "vitest.explorer"
   ]
