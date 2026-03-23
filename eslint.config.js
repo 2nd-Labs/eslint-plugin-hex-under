@@ -31,34 +31,6 @@ export default [
     },
   },
   {
-    plugins: {
-      'hex-under': plugin,
-    },
-    rules: {
-      'hex-under/hex-under': [
-        'error',
-        {
-          limit: 255,
-          skipBigInt: false,
-        },
-      ],
-      'hex-under/octal-under': [
-        'error',
-        {
-          limit: 511,
-          skipBigInt: false,
-        },
-      ],
-      'hex-under/binary-under': [
-        'error',
-        {
-          limit: 15,
-          skipBigInt: false,
-        },
-      ],
-    },
-  },
-  {
     ...eslintPlugin.configs.recommended,
     rules: {
       'eslint-plugin/no-meta-replaced-by': 'off',
@@ -85,6 +57,35 @@ export default [
     rules: {
       'json/no-duplicate-keys': 'error',
       'json/sort-keys': 'error',
+    },
+  },
+  {
+    ignores: ['test/bats/fixture/**/*.js'],
+    plugins: {
+      'hex-under': plugin,
+    },
+    rules: {
+      'hex-under/hex-under': [
+        'error',
+        {
+          limit: 255,
+          skipBigInt: false,
+        },
+      ],
+      'hex-under/octal-under': [
+        'error',
+        {
+          limit: 511,
+          skipBigInt: false,
+        },
+      ],
+      'hex-under/binary-under': [
+        'error',
+        {
+          limit: 15,
+          skipBigInt: false,
+        },
+      ],
     },
   },
 ];
