@@ -3,7 +3,7 @@ const BINARY_REGEX_BIGINT = /^0[bB][01_]+n$/;
 
 export default {
   meta: {
-    version: '0.3.1',
+    version: '0.4.0',
     type: 'suggestion',
     docs: {
       description: 'Ensures binary numbers do not exceed a limit.',
