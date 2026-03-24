@@ -2,7 +2,13 @@ name: Build and Test
 
 on:
   workflow_dispatch:
-  
+    inputs:
+      run_optional_step:
+        description: 'Optionalen Schritt ausführen?'
+        required: false
+        default: false
+        type: boolean
+
   push:
     branches: [main]
 
