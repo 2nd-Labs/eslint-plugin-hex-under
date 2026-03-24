@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
     inputs:
       run_optional_step:
-        description: 'optional step'
+        description: 'Run Prettier manually?'
         required: false
-        default: 'false'
-        type: string
+        default: false
+        type: boolean
 
   push:
     branches: [main]
@@ -31,8 +31,8 @@ concurrency:
 
 jobs:
   prettier:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_optional_step == 'true' }}
-    runs-on: ubuntu-slim
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_optional_step }}
+    runs-on: ubuntu-latest
     continue-on-error: true
     steps:
       - name: Checkout
@@ -40,7 +40,7 @@ jobs:
       - name: Prettify code
         uses: creyD/prettier_action@v4.6
         with:
-          dry: True
+          dry: true
   audit:
     runs-on: ubuntu-slim
     steps:
