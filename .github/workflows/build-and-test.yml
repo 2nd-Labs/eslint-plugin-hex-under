@@ -67,7 +67,6 @@ jobs:
           key: eslint-${{ runner.os }}-${{ hashFiles('**/*.js') }}
           restore-keys: |
             eslint-${{ runner.os }}-
-
   test:
     name: Testing
     needs:
@@ -100,7 +99,6 @@ jobs:
           key: test-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             test-cache-${{ runner.os }}-
-
   bats:
     name: Bats Tests
     needs:
