@@ -67,6 +67,7 @@ jobs:
           key: eslint-${{ runner.os }}-${{ hashFiles('**/*.js') }}
           restore-keys: |
             eslint-${{ runner.os }}-
+          ttl: 3600
 
   test:
     name: Testing
