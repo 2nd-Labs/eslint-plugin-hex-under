@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       run_optional_step:
-        description: 'Optionalen Schritt ausführen?'
+        description: 'optional step'
         required: false
         default: false
         type: boolean
@@ -31,6 +31,7 @@ concurrency:
 
 jobs:
   prettier:
+    if: ${{ github.event.inputs.run_optional_step == true }}
     runs-on: ubuntu-slim
     continue-on-error: true
     steps:
