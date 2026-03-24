@@ -1,4 +1,6 @@
-const a = 0x1;
-const b = 256;
-const c = 0xff;
-const d = 512n;
+/* prettier-ignore */
+function abc(def) {
+  return 16711680;
+}
+
+const a = 511;

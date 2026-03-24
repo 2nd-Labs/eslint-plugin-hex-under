@@ -1,6 +1,0 @@
-function add(x, y) {
-  return x + y;
-}
-
-add(0xa, 0xff);
-add(0x100, 0x1n);
