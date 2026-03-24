@@ -58,8 +58,6 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
-      - run: npm ci
-      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache
       - name: Cache ESLint
         uses: actions/cache@v5
         with:
@@ -67,6 +65,8 @@ jobs:
           key: eslint-${{ runner.os }}-${{ hashFiles('**/*.js') }}
           restore-keys: |
             eslint-${{ runner.os }}-
+      - run: npm ci
+      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache
   test:
     name: Testing
     needs:
@@ -88,8 +88,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
           cache-dependency-path: package-lock.json
-      - run: npm ci
-      - run: npm run test -- --coverage --logHeapUsage
       - name: Cache Vitest + Vite
         uses: actions/cache@v5
         with:
@@ -99,6 +97,8 @@ jobs:
           key: test-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             test-cache-${{ runner.os }}-
+      - run: npm ci
+      - run: npm run test -- --coverage --logHeapUsage
   bats:
     name: Bats Tests
     needs:
