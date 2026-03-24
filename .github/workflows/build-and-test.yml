@@ -91,6 +91,15 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
       - run: npm run test -- --coverage --logHeapUsage
+      - name: Cache Vitest + Vite
+        uses: actions/cache@v5
+        with:
+          path: |
+            node_modules/.vitest
+            node_modules/.vite
+          key: test-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            test-cache-${{ runner.os }}-
 
   bats:
     name: Bats Tests
