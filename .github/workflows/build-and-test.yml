@@ -73,7 +73,12 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - run: npm ci
-      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js'
+      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache
+      - name: Cache ESLint
+        uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: eslint-${{ github.sha }}
 
   test:
     name: Testing
