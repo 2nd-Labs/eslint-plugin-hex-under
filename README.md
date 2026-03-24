@@ -1,5 +1,7 @@
 # eslint-plugin-hex-under
 
+[![CI](https://github.com/2nd-Labs/eslint-plugin-hex-under/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/2nd-Labs/eslint-plugin-hex-under/actions/workflows/build-and-test.yml)
+
 Enforce readability by limiting non-decimal numeric literals (hex, binary, octal) in JavaScript.
 
 Automatically converts large non-decimal literals into readable decimal values or reports them as errors.
