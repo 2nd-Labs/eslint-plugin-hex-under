@@ -23,7 +23,7 @@ concurrency:
 
 jobs:
   prettier:
-    if: ${{ github.event_name == 'push' }}
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
