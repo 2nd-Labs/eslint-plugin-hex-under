@@ -34,7 +34,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
-      
+
   prettier:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
