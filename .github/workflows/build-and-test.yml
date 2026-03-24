@@ -1,14 +1,6 @@
 name: Build and Test
 
 on:
-  workflow_dispatch:
-    inputs:
-      run_optional_step:
-        description: 'Run Prettier manually?'
-        required: false
-        default: false
-        type: boolean
-
   push:
     branches: [main]
 
@@ -31,7 +23,7 @@ concurrency:
 
 jobs:
   prettier:
-    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_optional_step == 'true' }}
+    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
