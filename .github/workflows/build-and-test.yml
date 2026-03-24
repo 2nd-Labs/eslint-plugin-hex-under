@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
   prettier:
-    if: ${{ github.event.inputs.run_optional_step == 'true' }}
+    if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.run_optional_step == 'true' }}
     runs-on: ubuntu-slim
     continue-on-error: true
     steps:
