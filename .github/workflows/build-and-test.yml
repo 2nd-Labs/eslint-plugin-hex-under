@@ -94,7 +94,7 @@ jobs:
           path: |
             node_modules/.vitest
             node_modules/.vite
-          key: test-cache-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          key: test-cache-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             test-cache-${{ runner.os }}-
       - run: npm ci
