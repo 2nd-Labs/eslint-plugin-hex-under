@@ -23,7 +23,8 @@ concurrency:
 
 jobs:
   prettier:
-    runs-on: ubuntu-slim
+    if: ${{ github.event_name == 'push' }}
+    runs-on: ubuntu-latest
     continue-on-error: true
     steps:
       - name: Checkout
@@ -31,7 +32,7 @@ jobs:
       - name: Prettify code
         uses: creyD/prettier_action@v4.6
         with:
-          dry: True
+          dry: true
   audit:
     runs-on: ubuntu-slim
     steps:
