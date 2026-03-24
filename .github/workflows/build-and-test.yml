@@ -22,6 +22,24 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  install:
+    runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache.outputs.cache-hit }}
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
   prettier:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
@@ -35,6 +53,7 @@ jobs:
           dry: true
   audit:
     runs-on: ubuntu-slim
+    needs: [install]
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v6
@@ -44,6 +63,13 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - name: Install dependencies
         run: npm ci
       - name: Security check
@@ -51,6 +77,7 @@ jobs:
   lint:
     name: Linting
     runs-on: ubuntu-slim
+    needs: [install]
     steps:
       - uses: actions/checkout@v6
       - uses: actions/setup-node@v6
@@ -58,12 +85,25 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - run: npm ci
-      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js'
+      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache
+      - name: Cache ESLint
+        uses: actions/cache@v4
+        with:
+          path: .eslintcache
+          key: eslint-${{ github.sha }}
 
   test:
     name: Testing
     needs:
+      - install
       - audit
       - lint
     strategy:
@@ -82,12 +122,20 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: npm
           cache-dependency-path: package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - run: npm ci
       - run: npm run test -- --coverage --logHeapUsage
 
   bats:
     name: Bats Tests
     needs:
+      - install
       - audit
       - lint
     runs-on: ubuntu-slim
@@ -98,5 +146,12 @@ jobs:
           node-version: 24
           cache: npm
           cache-dependency-path: package-lock.json
+      - name: Cache node_modules
+        uses: actions/cache@v5
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
       - run: npm ci
       - run: npm run test:bats
