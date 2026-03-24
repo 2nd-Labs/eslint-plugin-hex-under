@@ -6,8 +6,8 @@ on:
       run_optional_step:
         description: 'optional step'
         required: false
-        default: false
-        type: boolean
+        default: 'false'
+        type: string
 
   push:
     branches: [main]
@@ -31,7 +31,7 @@ concurrency:
 
 jobs:
   prettier:
-    if: ${{ github.event.inputs.run_optional_step == true }}
+    if: ${{ github.event.inputs.run_optional_step == 'true' }}
     runs-on: ubuntu-slim
     continue-on-error: true
     steps:
