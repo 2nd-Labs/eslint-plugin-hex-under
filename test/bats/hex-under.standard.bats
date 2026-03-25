@@ -35,10 +35,6 @@ run_fixture() {
   }
 }
 
-@test "fixture: example1.js" {
-  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example1.js"
-}
-
-@test "fixture: example2.js" {
-  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example2.js"
+@test "fixture: example.hex.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.hex.js"
 }

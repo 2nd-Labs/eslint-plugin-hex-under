@@ -48,3 +48,10 @@ const i = 0x12345;
 const func = () => 0x123456;
 
 var x = 0x2344566n;
+
+/* prettier-ignore */
+function abc(def) {
+  return 0XFf0000;
+}
+
+const y = 0x1_f_f;
