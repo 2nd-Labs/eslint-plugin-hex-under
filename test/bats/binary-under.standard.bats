@@ -35,6 +35,6 @@ run_fixture() {
   }
 }
 
-@test "fixture: example1.binary.js" {
-  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example1.binary.js"
+@test "fixture: example.binary.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.binary.js"
 }

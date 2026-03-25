@@ -48,3 +48,10 @@ const i = 74565;
 const func = () => 1193046;
 
 var x = 36980070n;
+
+/* prettier-ignore */
+function abc(def) {
+  return 16711680;
+}
+
+const y = 511;

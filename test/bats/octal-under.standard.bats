@@ -35,6 +35,6 @@ run_fixture() {
   }
 }
 
-@test "fixture: example1.octal.js" {
-  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example1.octal.js"
+@test "fixture: example.octal.js" {
+  run_fixture "$BATS_TEST_DIRNAME/fixture/standard/example.octal.js"
 }
