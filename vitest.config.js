@@ -10,6 +10,7 @@ export default defineConfig({
       exclude: ['node_modules', 'test', '**/*.test.js', '**/*.spec.js'],
       reporter: ['text', 'html', 'json', 'lcov', 'json-summary'],
       reportsDirectory: './coverage',
+      reportOnFailure: true,
       lines: 80,
       functions: 80,
       branches: 75,
