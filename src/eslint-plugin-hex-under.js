@@ -10,6 +10,8 @@ const plugin = {
   },
 };
 
+const foo = 'bar';
+
 export const configs = {
   recommended: {
     rules: {
