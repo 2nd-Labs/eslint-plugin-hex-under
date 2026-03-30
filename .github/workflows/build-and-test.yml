@@ -102,6 +102,9 @@ jobs:
             test-cache-${{ runner.os }}-
       - run: npm ci
       - run: npm run test -- --coverage --logHeapUsage
+      - name: Report Coverage
+        if: always()
+        uses: davelosert/vitest-coverage-report-action@v2
   bats:
     name: Bats Tests
     needs:
