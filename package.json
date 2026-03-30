@@ -36,7 +36,9 @@
   "repository": "github:0xflotus/eslint-plugin-hex-under",
   "scripts": {
     "coverage": "vitest run --coverage",
-    "lint": "prettier . --check && eslint . --config eslint.config.js",
+    "format": "prettier . --check",
+    "lint": "eslint src --config eslint.config.js",
+    "prelint": "npm run format",
     "test": "vitest run",
     "test:all": "npm run test && npm run test:bats",
     "test:bats": "bats --print-output-on-failure --abort --verbose-run test/bats/*.bats",

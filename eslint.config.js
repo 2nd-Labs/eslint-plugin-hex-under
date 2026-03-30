@@ -17,6 +17,7 @@ export default [
   },
   {
     ...js.configs.all,
+    files: ['src/**/*.js'],
     rules: {
       'no-magic-numbers': 'off',
     },
@@ -32,6 +33,7 @@ export default [
   },
   {
     ...eslintPlugin.configs.recommended,
+    files: ['src/**/*.js'],
     rules: {
       'eslint-plugin/no-meta-replaced-by': 'off',
     },
