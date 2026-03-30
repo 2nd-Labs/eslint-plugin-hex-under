@@ -8,7 +8,7 @@ export default defineConfig({
       provider: 'v8',
       include: ['src/rules/**/*.js'],
       exclude: ['node_modules', 'test', '**/*.test.js', '**/*.spec.js'],
-      reporter: ['text', 'html', 'json', 'lcov'],
+      reporter: ['text', 'html', 'json', 'lcov', 'json-summary'],
       reportsDirectory: './coverage',
       lines: 80,
       functions: 80,
