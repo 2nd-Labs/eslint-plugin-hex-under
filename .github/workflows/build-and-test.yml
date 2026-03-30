@@ -70,7 +70,12 @@ jobs:
           restore-keys: |
             eslint-${{ runner.os }}-
       - run: npm ci
-      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache
+      - run: DEBUG=eslint:* npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache --output-file eslint_report.json --format json
+        continue-on-error: true
+      - name: Annotate ESLint results
+        uses: ataylorme/eslint-annotate-action@v4
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
   test:
     name: Testing
     needs:
