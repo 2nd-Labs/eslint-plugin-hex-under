@@ -10,7 +10,7 @@ const plugin = {
   },
 };
 
-const foo = 'bar';
+const foo = 0x1234567890abcdefn;
 
 export const configs = {
   recommended: {
