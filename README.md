@@ -51,7 +51,7 @@ function add(a, b) {
   return a + b + 0x1f;
 }
 
-const binary = 0b1111_1111;
+const binary = 0b1111;
 
 const octal = 0o377;
 ```
