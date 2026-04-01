@@ -1,3 +1,4 @@
+import { ESLint } from 'eslint';
 import { createRuleTester } from 'eslint-vitest-rule-tester';
 import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/hex-under.js';
@@ -96,18 +97,55 @@ describe('hex-under/hex-under', () => {
     });
   });
 
-  describe('comments', () => {
-    it('should be valid with line comment above the code', async () => {
-      expect.hasAssertions();
+  describe('comments - with ESLint', () => {
+    const eslint = new ESLint({
+      baseConfig: {
+        languageOptions: {
+          parserOptions: {
+            ecmaVersion: 2025,
+            sourceType: 'module',
+          },
+        },
+        rules: {
+          'hex-under/hex-under': 'error',
+        },
+      },
+    });
 
-      const { result } = await valid({
-        code: '// eslint-disable-next-line\nconst hexTooBig = 0xfffff;',
-      });
+    it('should skip disabled lines', async () => {
+      const code = `// eslint-disable-next-line
+                    const hexTooBig = 0xfffff;`;
 
-      expect(result.output).toBe(
-        '// eslint-disable-next-line\nconst hexTooBig = 0xfffff;',
-      );
-      expect(result.fixed).toBe(false);
+      const results = await eslint.lintText(code);
+
+      expect(results[0].errorCount).toBe(0);
+    });
+
+    it('should have have errorCount of 0 with enabled hex-under/hex-under', async () => {
+      const code = `// eslint-disable-next-line hex-under/hex-under
+                    const hexTooBig = 0xfffff;`;
+
+      const results = await eslint.lintText(code);
+
+      expect(results[0].errorCount).toBe(0);
+    });
+
+    it('should have have errorCount of 1 with enabled hex-under/binary-under', async () => {
+      const code = `// eslint-disable-next-line hex-under/binary-under
+                    const hexTooBig = 0xfffff;`;
+
+      const results = await eslint.lintText(code);
+
+      expect(results[0].errorCount).toBe(1);
+    });
+
+    it('should have have errorCount of 1 with enabled hex-under/octal-under', async () => {
+      const code = `// eslint-disable-next-line hex-under/octal-under
+                    const hexTooBig = 0xfffff;`;
+
+      const results = await eslint.lintText(code);
+
+      expect(results[0].errorCount).toBe(1);
     });
   });
 
