@@ -18,7 +18,7 @@ run_fixture() {
 
   cp "$input" tmp/input.js
 
-  run npx eslint --fix tmp/input.js --config test/bats/eslint.config.js
+  run npx eslint --fix tmp/input.js --config test/bats/bats-eslint.config.js
   if [ "$status" -ne 0 ]; then
     echo "ESLint failed for $fixture_name"
     echo "$output"
