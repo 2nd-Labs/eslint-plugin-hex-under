@@ -3,7 +3,7 @@ const OCTAL_REGEX_BIGINT = /^0[oO]?[0-7_]+n$/;
 
 export default {
   meta: {
-    version: '0.4.0',
+    version: '0.5.0',
     type: 'suggestion',
     docs: {
       description: 'Ensures octal numbers do not exceed a limit.',
@@ -45,32 +45,6 @@ export default {
     return {
       'Literal[raw=/^0[oO]?[0-7_]+n?$/]'(node) {
         const raw = node.raw;
-
-        const sourceCode = context.sourceCode;
-        if (sourceCode.lines[0] === '/* ignore-all-hex-under */') {
-          return;
-        }
-
-        const comments = sourceCode.getAllComments();
-        const firstNode = sourceCode.ast.body[0];
-        const commentsBeforeCode = comments.filter((comment) => {
-          return comment.range[1] <= firstNode.range[0];
-        });
-        if (
-          commentsBeforeCode.some(
-            (comment) =>
-              comment.type === 'Block' &&
-              comment.value.trim() === 'ignore-octal-under',
-          )
-        ) {
-          return;
-        }
-
-        const line = node.loc.end.line;
-        const ignore =
-          sourceCode.lines[line - 2]?.startsWith('// ignore-octal-under') ||
-          /\/\/\s(ignore-octal-under)/.test(sourceCode.lines[line - 1]);
-        if (ignore) return;
 
         if (
           raw.startsWith('0') &&

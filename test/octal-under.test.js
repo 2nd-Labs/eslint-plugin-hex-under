@@ -64,123 +64,18 @@ describe('hex-under/octal-under', () => {
     });
   });
 
-  describe('default cases - comments', () => {
-    it('should be valid with "ignore-all-hex-under" block comment on the very first line', async () => {
+  describe('comments', () => {
+    it('should be valid with line comment above the code', async () => {
       expect.hasAssertions();
 
       const { result } = await valid({
-        code: '/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o7777n;',
+        code: '// eslint-disable-next-line\nconst octalTooBig = 0o1000;',
       });
 
       expect(result.output).toBe(
-        '/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o7777n;',
+        '// eslint-disable-next-line\nconst octalTooBig = 0o1000;',
       );
       expect(result.fixed).toBe(false);
-    });
-
-    it('should be valid with "ignore-octal-under" block comment', async () => {
-      expect.hasAssertions();
-
-      const { result } = await valid({
-        code: '// This should be ignored by octal-under rule because of the comment.\n\n/* ignore-octal-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
-      });
-
-      expect(result.output).toBe(
-        '// This should be ignored by octal-under rule because of the comment.\n\n/* ignore-octal-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
-      );
-      expect(result.fixed).toBe(false);
-    });
-
-    it.each([
-      '// ignore-octal-under\nconst foo = 0o1000;',
-      '// ignore-octal-under\nconst foo = 0o1000n;',
-      '// ignore-octal-under\nconst foo = 0o1000n; const bar = 0o1000;',
-    ])('should be valid with comment above', async (testCase) => {
-      expect.hasAssertions();
-
-      const { result } = await valid({
-        code: testCase,
-      });
-
-      expect(result.output).toBe(testCase);
-      expect(result.fixed).toBe(false);
-    });
-
-    it.each([
-      'const foo = 0o1000; // ignore-octal-under',
-      'const foo = 0o1000n; // ignore-octal-under',
-      'const foo = 0o1000n; const bar = 0o1000; // ignore-octal-under',
-    ])('should be valid with comment on the same line', async (testCase) => {
-      expect.hasAssertions();
-
-      const { result } = await valid({
-        code: testCase,
-      });
-
-      expect(result.output).toBe(testCase);
-      expect(result.fixed).toBe(false);
-    });
-
-    it.each([
-      [
-        'ignore-octal-under',
-        1,
-        'const bar = 0o1000; // ignore-octal-under\nconst foo = 0o1000n;',
-        'const bar = 0o1000; // ignore-octal-under\nconst foo = 512n;',
-      ],
-      [
-        'ignore-binary-under',
-        2,
-        'const bar = 0o1000; // ignore-binary-under\nconst foo = 0o1000n;',
-        'const bar = 512; // ignore-binary-under\nconst foo = 512n;',
-      ],
-      [
-        'ignore-hex-under',
-        2,
-        'const bar = 0o1000; // ignore-hex-under\nconst foo = 0o1000n;',
-        'const bar = 512; // ignore-hex-under\nconst foo = 512n;',
-      ],
-    ])(
-      'should fail with ignore rule %s and %d error(s)',
-      async (_rule, errors, testCase, output) => {
-        expect.hasAssertions();
-
-        const { result } = await invalid({
-          code: testCase,
-          errors: errors,
-        });
-
-        expect(result.output).toBe(output);
-        expect(result.fixed).toBe(true);
-      },
-    );
-
-    it('should fail with "ignore-all-hex-under" block comment not on the very first line', async () => {
-      expect.hasAssertions();
-
-      const { result } = await invalid({
-        code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0o1000;\nconst bar = 0o1001;',
-        errors: 2,
-      });
-
-      expect(result.output).toBe(
-        '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 512;\nconst bar = 513;',
-      );
-      expect(result.fixed).toBe(true);
-    });
-
-    it('should fail with "ignore-hex-under" and "ignore-binary-under" block comments', async () => {
-      expect.hasAssertions();
-
-      const { result } = await invalid({
-        code: '// This should fail.\n/* ignore-hex-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
-        errors: 1,
-      });
-
-      expect(result.output).toBe(
-        '// This should fail.\n/* ignore-hex-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 512;',
-      );
-      expect(result.fixed).toBe(true);
     });
   });
 

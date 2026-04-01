@@ -96,12 +96,13 @@ const octal = 512;
 #### Ignore with line comments
 
 ```js
-// ignore-hex-under
+// eslint-disable-next-line hex-under/hex-under
 const hexTooBig = 0xfffff;
 
-const binTooBig = 0b1000_0000_0000; // ignore-binary-under
+// eslint-disable-next-line hex-under/binary-under
+const binTooBig = 0b1000_0000_0000;
 
-// ignore-octal-under
+// eslint-disable-next-line hex-under/octal-under
 const octalTooBig = 0o777777;
 ```
 
@@ -110,29 +111,6 @@ const octalTooBig = 0o777777;
 ```js
 // valid with { limit: 255, skipBigInt: true }
 const mask = 0xdead_beefn;
-```
-
-#### Disable rules globally
-
-```js
-/* ignore-all-hex-under */
-
-// ignore-all-hex-under must be the very first line and a block comment.
-// This will ignore all of the whole file.
-const foo = 0xffff;
-const bar = 0b10100010101;
-```
-
-#### Disable specific formats
-
-```js
-// This should ignore all hex numbers but not octal or binary numbers.
-
-/* ignore-hex-under */
-
-const hex = 0x100; // stays 0x100
-const octal = 0o1000; // fixed to 512
-const binary = 0b10000; // fixed to 16
 ```
 
 ## Integration
@@ -177,14 +155,6 @@ export default [
 | ------------ | ------- | --------------- | --------------------- |
 | `limit`      | number  | format-specific | Maximum allowed value |
 | `skipBigInt` | boolean | false           | Ignore BigInt values  |
-
-### Ignoring rules
-
-You can disable rules using inline comments:
-
-- `ignore-hex-under`
-- `ignore-binary-under`
-- `ignore-octal-under`
 
 ## Testing & Code Coverage
 
