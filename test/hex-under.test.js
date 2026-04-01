@@ -96,117 +96,18 @@ describe('hex-under/hex-under', () => {
     });
   });
 
-  describe('default cases (comments)', () => {
-    it.each([
-      'const foo = 0x100; // ignore-hex-under',
-      'const foo = 0x100n; // ignore-hex-under',
-      'const foo = 0x100n; const bar = 0x100; // ignore-hex-under',
-    ])(
-      'should be valid with comment after the line',
-      (testCaseWithComments) => {
-        expect.hasAssertions();
-
-        valid(testCaseWithComments);
-      },
-    );
-
-    it.each([
-      '// ignore-hex-under\nconst foo = 0x100;',
-      '// ignore-hex-under\nconst foo = 0x100n;',
-      '// ignore-hex-under\nconst foo = 0x100n; const bar = 0x100;',
-    ])(
-      'should be valid with comment above the line',
-      (testCaseWithComments) => {
-        expect.hasAssertions();
-
-        valid(testCaseWithComments);
-      },
-    );
-
-    it('should be valid with "ignore-all-hex-under" block comment at very first line', () => {
+  describe('comments', () => {
+    it('should be valid with line comment above the code', async () => {
       expect.hasAssertions();
 
-      valid(
-        '/* ignore-all-hex-under */\n\nconst foo = 0x100;\nconst bar = 0xfff;',
-      );
-    });
-
-    it('should be valid with "ignore-hex-under" block comment', () => {
-      expect.hasAssertions();
-
-      valid(
-        '// This should be ignored by hex-under rule because of the comment.\n\n/* ignore-hex-under */\n\nconst foo = 0x111111111111111111111111;\nconst bar = 0x1000000000000000000000000;',
-      );
-    });
-
-    it('should be invalid with "ignore-hex-under" line comment', async () => {
-      expect.hasAssertions();
-
-      const { result } = await invalid({
-        code: 'const bar = 0x100; // ignore-hex-under\nconst foo = 0x100n;',
-        errors: 1,
+      const { result } = await valid({
+        code: '// eslint-disable-next-line\nconst hexTooBig = 0xfffff;',
       });
 
       expect(result.output).toBe(
-        'const bar = 0x100; // ignore-hex-under\nconst foo = 256n;',
+        '// eslint-disable-next-line\nconst hexTooBig = 0xfffff;',
       );
-      expect(result.fixed).toBe(true);
-    });
-
-    it('should fail with "ignore-binary-under" line comment', async () => {
-      expect.hasAssertions();
-
-      const { result } = await invalid({
-        code: 'const bar = 0x100; // ignore-binary-under\nconst foo = 0x100n;',
-        errors: 2,
-      });
-
-      expect(result.output).toBe(
-        'const bar = 256; // ignore-binary-under\nconst foo = 256n;',
-      );
-      expect(result.fixed).toBe(true);
-    });
-
-    it('should fail with "ignore-octal-under" line comment', async () => {
-      expect.hasAssertions();
-
-      const { result } = await invalid({
-        code: 'const bar = 0x100; // ignore-octal-under\nconst foo = 0x100n;',
-        errors: 2,
-      });
-
-      expect(result.output).toBe(
-        'const bar = 256; // ignore-octal-under\nconst foo = 256n;',
-      );
-      expect(result.fixed).toBe(true);
-    });
-
-    it('should fail with "ignore-all-hex-under" block comment not on the very first line', async () => {
-      expect.hasAssertions();
-
-      const { result } = await invalid({
-        code: '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 0x100;\nconst bar = 0x101;',
-        errors: 2,
-      });
-
-      expect(result.output).toBe(
-        '// This should fail.\n/* ignore-all-hex-under */\n\nconst foo = 256;\nconst bar = 257;',
-      );
-      expect(result.fixed).toBe(true);
-    });
-
-    it('should fail with "ignore-binary-under" and "ignore-octal-under" block comments', async () => {
-      expect.hasAssertions();
-
-      const { result } = await invalid({
-        code: '// This should fail.\n/* ignore-octal-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 0x100;\nlet octalFoo = 0o1000;',
-        errors: 1,
-      });
-
-      expect(result.output).toBe(
-        '// This should fail.\n/* ignore-octal-under */\n\n/* ignore-binary-under */\nconst foo = 0b10000;\nconst bar = 0b10001;\nconst bat = 256;\nlet octalFoo = 0o1000;',
-      );
-      expect(result.fixed).toBe(true);
+      expect(result.fixed).toBe(false);
     });
   });
 

@@ -4,7 +4,7 @@ const HEX_REGEX_BIGINT = /^0[xX][0-9a-fA-F_]+n$/;
 export default {
   meta: {
     type: 'suggestion',
-    version: '0.8.0',
+    version: '0.9.0',
     defaultOptions: [
       {
         limit: 255,
@@ -46,32 +46,6 @@ export default {
     return {
       'Literal[raw=/^0[xX][0-9a-fA-F_]+n?$/]'(node) {
         const raw = node.raw;
-
-        const sourceCode = context.sourceCode;
-        if (sourceCode.lines[0] === '/* ignore-all-hex-under */') {
-          return;
-        }
-
-        const comments = sourceCode.getAllComments();
-        const firstNode = sourceCode.ast.body[0];
-        const commentsBeforeCode = comments.filter((comment) => {
-          return comment.range[1] <= firstNode.range[0];
-        });
-        if (
-          commentsBeforeCode.some(
-            (comment) =>
-              comment.type === 'Block' &&
-              comment.value.trim() === 'ignore-hex-under',
-          )
-        ) {
-          return;
-        }
-
-        const line = node.loc.end.line;
-        const ignore =
-          sourceCode.lines[line - 2]?.startsWith('// ignore-hex-under') ||
-          /\/\/\s(ignore-hex-under)/.test(sourceCode.lines[line - 1]);
-        if (ignore) return;
 
         const isHexBigInt = HEX_REGEX_BIGINT.test(raw);
         const isHex = HEX_REGEX.test(raw);
