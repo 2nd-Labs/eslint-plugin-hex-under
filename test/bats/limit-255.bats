@@ -23,7 +23,7 @@ run_fixture() {
     --rule "'hex-under/octal-under': ['error', { limit: 255 }]" \
     --rule "'hex-under/binary-under': ['error', { limit: 255 }]" \
     --fix tmp/input.js \
-    --config test/bats/eslint.config.js
+    --config test/bats/bats-eslint.config.js
   if [ "$status" -ne 0 ]; then
     echo "ESLint failed for $fixture_name"
     echo "$output"
