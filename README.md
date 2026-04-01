@@ -71,7 +71,7 @@ let d = 0xaa_ffn;
 
 const binary = 0b1_0000_0000;
 
-const octal = 0o400;
+const octal = 0o1000;
 ```
 
 #### Auto-fixable
@@ -90,7 +90,7 @@ let d = 43775;
 
 const binary = 256;
 
-const octal = 256;
+const octal = 512;
 ```
 
 #### Ignore with line comments
