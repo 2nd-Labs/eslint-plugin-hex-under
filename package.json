@@ -4,7 +4,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@eslint/json": "1.2.0",
-    "@vitest/coverage-istanbul": "4.1.2",
+    "@vitest/coverage-istanbul": "4.1.4",
     "@vitest/eslint-plugin": "1.6.15",
     "bats": "1.13.0",
     "eslint": "10.2.0",
