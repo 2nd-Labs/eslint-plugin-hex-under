@@ -11,6 +11,7 @@ export default {
         skipBigInt: false,
       },
     ],
+    languages: ['js/js'],
     docs: {
       description:
         'Ensures that a hexadecimal number does not exceed a specified value (default: 255).',
