@@ -109,7 +109,7 @@ const octalTooBig = 0o777777;
 #### Ignore Bigint values
 
 ```js
-// valid with { limit: 255, skipBigInt: true }
+// valid with { limit: 255, ignoreBigInt: true }
 const mask = 0xdead_beefn;
 ```
 
@@ -133,9 +133,9 @@ export default [
       'hex-under': eslintPluginHexUnder,
     },
     rules: {
-      'hex-under/hex-under': ['error', { limit: 255, skipBigInt: false }],
-      'hex-under/octal-under': ['error', { limit: 511, skipBigInt: false }],
-      'hex-under/binary-under': ['error', { limit: 15, skipBigInt: false }],
+      'hex-under/hex-under': ['error', { limit: 255, ignoreBigInt: false }],
+      'hex-under/octal-under': ['error', { limit: 511, ignoreBigInt: false }],
+      'hex-under/binary-under': ['error', { limit: 15, ignoreBigInt: false }],
     },
   },
 ];
@@ -151,10 +151,10 @@ export default [
 
 ## Configuration
 
-| Option       | Type    | Default         | Description           |
-| ------------ | ------- | --------------- | --------------------- |
-| `limit`      | number  | format-specific | Maximum allowed value |
-| `skipBigInt` | boolean | false           | Ignore BigInt values  |
+| Option         | Type    | Default         | Description           |
+| ------------   | ------- | --------------- | --------------------- |
+| `limit`        | number  | format-specific  | Maximum allowed value |
+| `ignoreBigInt` | boolean | false           | Ignore BigInt values  |
 
 ## Testing & Code Coverage
 

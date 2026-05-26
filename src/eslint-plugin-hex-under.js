@@ -13,16 +13,16 @@ const plugin = {
 export const configs = {
   recommended: {
     rules: {
-      'hex-under/hex-under': ['warn', { limit: 255, skipBigInt: false }],
-      'hex-under/octal-under': ['warn', { limit: 511, skipBigInt: false }],
-      'hex-under/binary-under': ['warn', { limit: 255, skipBigInt: false }],
+      'hex-under/hex-under': ['warn', { limit: 255, ignoreBigInt: false }],
+      'hex-under/octal-under': ['warn', { limit: 511, ignoreBigInt: false }],
+      'hex-under/binary-under': ['warn', { limit: 255, ignoreBigInt: false }],
     },
   },
   all: {
     rules: {
-      'hex-under/hex-under': ['error', { limit: 255, skipBigInt: false }],
-      'hex-under/octal-under': ['error', { limit: 511, skipBigInt: false }],
-      'hex-under/binary-under': ['error', { limit: 15, skipBigInt: false }],
+      'hex-under/hex-under': ['error', { limit: 255, ignoreBigInt: false }],
+      'hex-under/octal-under': ['error', { limit: 511, ignoreBigInt: false }],
+      'hex-under/binary-under': ['error', { limit: 15, ignoreBigInt: false }],
     },
   },
 };
