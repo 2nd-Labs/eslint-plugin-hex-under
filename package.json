@@ -1,6 +1,8 @@
 {
   "author": "0xflotus",
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
+  "type": "module",
+  "version": "1.9.5",
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@eslint/json": "1.2.0",
@@ -47,7 +49,5 @@
     "test:all": "npm run test && npm run test:bats",
     "test:bats": "bats --print-output-on-failure --abort --verbose-run test/bats/*.bats",
     "test:watch": "vitest"
-  },
-  "type": "module",
-  "version": "1.9.5"
+  }
 }
