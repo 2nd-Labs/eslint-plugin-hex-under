@@ -11,7 +11,7 @@ export default {
     defaultOptions: [
       {
         limit: 15,
-        skipBigInt: false,
+        ignoreBigInt: false,
       },
     ],
     fixable: 'code',
@@ -24,7 +24,7 @@ export default {
             minimum: 0,
             description: 'The maximum allowed value for binary literals.',
           },
-          skipBigInt: {
+          ignoreBigInt: {
             type: 'boolean',
             description: 'Whether to skip BigInt literals.',
           },
@@ -40,7 +40,7 @@ export default {
   },
 
   create(context) {
-    const [{ limit = 15, skipBigInt = false } = {}] = context.options;
+    const [{ limit = 15, ignoreBigInt = false } = {}] = context.options;
     return {
       'Literal[raw=/^0[bB][01_]+n?$/]'(node) {
         const raw = node.raw;
@@ -48,7 +48,7 @@ export default {
         const isBigInt = BINARY_REGEX_BIGINT.test(raw);
         const isBinary = BINARY_REGEX.test(raw);
 
-        if (skipBigInt && isBigInt) return;
+        if (ignoreBigInt && isBigInt) return;
 
         const normalized = raw.replace(/_/g, '').replace(/n$/, '');
         let value = null;

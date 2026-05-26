@@ -6,7 +6,7 @@ export default {
     defaultOptions: [
       {
         limit: 255,
-        skipBigInt: false,
+        ignoreBigInt: false,
       },
     ],
     languages: ['js/js'],
@@ -25,7 +25,7 @@ export default {
             minimum: 0,
             description: 'The maximum allowed value for hexadecimal literals.',
           },
-          skipBigInt: {
+          ignoreBigInt: {
             type: 'boolean',
             description: 'Whether to skip BigInt literals.',
           },
@@ -41,7 +41,7 @@ export default {
   },
 
   create(context) {
-    const [{ limit = 255, skipBigInt = false } = {}] = context.options;
+    const [{ limit = 255, ignoreBigInt = false } = {}] = context.options;
     return {
       'Literal[raw=/^0[xX][0-9a-fA-F_]+n?$/]'(node) {
         const raw = node.raw;
@@ -49,7 +49,7 @@ export default {
         const isHexBigInt = HEX_REGEX_BIGINT.test(raw);
         const isHex = HEX_REGEX.test(raw);
 
-        if (skipBigInt && isHexBigInt) return;
+        if (ignoreBigInt && isHexBigInt) return;
 
         const normalized = raw.replace(/_/g, '').replace(/n$/, '');
         let value = null;
