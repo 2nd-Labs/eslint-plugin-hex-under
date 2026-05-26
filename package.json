@@ -2,7 +2,7 @@
   "author": "0xflotus",
   "description": "This ESLint rule proves that hex numbers are less than a specified value.",
   "type": "module",
-  "version": "1.9.5",
+  "version": "1.10.0",
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@eslint/json": "1.2.0",
