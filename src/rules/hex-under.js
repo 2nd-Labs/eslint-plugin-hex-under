@@ -35,7 +35,7 @@ export default {
       },
     ],
     messages: {
-      valueOverGeneral:
+      valueOver:
         'Hex number {{ raw }} ({{ value }}) exceeds the limit of {{ limit }}.',
     },
   },
@@ -64,7 +64,7 @@ export default {
 
         context.report({
           node,
-          messageId: 'valueOverGeneral',
+          messageId: 'valueOver',
           data: {
             raw,
             value,
