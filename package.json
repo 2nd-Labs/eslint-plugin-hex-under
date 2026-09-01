@@ -5,7 +5,7 @@
   "version": "1.10.0",
   "devDependencies": {
     "@eslint/js": "10.0.1",
-    "@eslint/json": "2.0.1",
+    "@eslint/json": "2.1.0",
     "@vitest/coverage-istanbul": "4.1.11",
     "@vitest/eslint-plugin": "1.6.27",
     "bats": "1.13.0",
@@ -16,7 +16,8 @@
     "vitest": "4.1.11"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=24",
+    "npm": ">=11"
   },
   "files": [
     "src/",

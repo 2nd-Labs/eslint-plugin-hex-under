@@ -11,7 +11,7 @@ export default {
     defaultOptions: [
       {
         limit: 511,
-        ignoreBigInt: false,
+        checkBigInt: true,
       },
     ],
     fixable: 'code',
@@ -24,9 +24,9 @@ export default {
             minimum: 0,
             description: 'The maximum allowed value for octal literals.',
           },
-          ignoreBigInt: {
+          checkBigInt: {
             type: 'boolean',
-            description: 'Whether to skip BigInt literals.',
+            description: 'Whether to check BigInt literals.',
           },
         },
         description: 'Options for octal-under rule',
@@ -40,7 +40,7 @@ export default {
   },
 
   create(context) {
-    const [{ limit = 511, ignoreBigInt = false } = {}] = context.options;
+    const [{ limit = 511, checkBigInt = true } = {}] = context.options;
     return {
       'Literal[raw=/^0[oO]?[0-7_]+n?$/]'(node) {
         const raw = node.raw;
@@ -56,7 +56,7 @@ export default {
         const isBigInt = OCTAL_REGEX_BIGINT.test(raw);
         const isOctal = OCTAL_REGEX.test(raw);
 
-        if (ignoreBigInt && isBigInt) return;
+        if (!checkBigInt && isBigInt) return;
 
         const normalized = raw.replace(/_/g, '').replace(/n$/, '');
         let value = null;
