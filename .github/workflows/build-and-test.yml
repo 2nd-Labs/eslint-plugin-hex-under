@@ -80,8 +80,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [22, 24, 25]
-        os: [ubuntu-latest, ubuntu-26.04-arm, macos-latest]
+        node-version: [22, 24, 25, 26, "latest"]
+        os: [ubuntu-latest, ubuntu-26.04-arm, macos-latest, windows-latest]
         include:
           - os: ubuntu-24.04-arm
             node-version: 24
