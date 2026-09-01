@@ -134,21 +134,21 @@ describe('hex-under/octal-under', () => {
     });
   });
 
-  describe('with option ignoreBigInt', () => {
+  describe('with option checkBigInt', () => {
     it.each([
-      ['const foo = 0o777;', true],
-      ['const foo = 0O777;', true],
-      ['const foo = 0o1000n;', true],
-      ['const foo = 0O1000n;', true],
+      ['const foo = 0o777;', false],
+      ['const foo = 0O777;', false],
+      ['const foo = 0o1000n;', false],
+      ['const foo = 0O1000n;', false],
     ])(
-      '%s should be valid with ignoreBigInt=%s',
-      async (testCase, ignoreBigInt) => {
+      '%s should be valid with checkBigInt=%s',
+      async (testCase, checkBigInt) => {
         expect.hasAssertions();
 
         const { result } = await valid({
           code: testCase,
           options: {
-            ignoreBigInt: ignoreBigInt,
+            checkBigInt: checkBigInt,
           },
         });
 
@@ -158,17 +158,17 @@ describe('hex-under/octal-under', () => {
     );
 
     it.each([
-      ['const foo = 0o1000n;', 'const foo = 512n;', false],
-      ['const foo = 0O1000n;', 'const foo = 512n;', false],
+      ['const foo = 0o1000n;', 'const foo = 512n;', true],
+      ['const foo = 0O1000n;', 'const foo = 512n;', true],
     ])(
-      '%s should fail with ignoreBigInt=false',
-      async (testCase, output, ignoreBigInt) => {
+      '%s should fail with checkBigInt=true',
+      async (testCase, output, checkBigInt) => {
         expect.hasAssertions();
 
         const { result } = await invalid({
           code: testCase,
           options: {
-            ignoreBigInt: ignoreBigInt,
+            checkBigInt: checkBigInt,
           },
           errors: 1,
         });

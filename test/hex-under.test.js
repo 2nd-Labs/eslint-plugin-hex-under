@@ -143,29 +143,29 @@ describe('hex-under/hex-under', () => {
     });
   });
 
-  describe('with option "ignoreBigInt"', () => {
+  describe('with option checkBigInt', () => {
     it.each([
-      ['const foo = 0xff;', true],
-      ['const foo = 0Xff;', true],
-      ['const foo = 0xffffn;', true],
-      ['const foo = 0Xffffn;', true],
-      ['const foo = 0xFF;', true],
-      ['const foo = 0XFF;', true],
-      ['const foo = 0xFFFFn;', true],
-      ['const foo = 0XFFFFn;', true],
-      ['const foo = 0xff_ffn', true],
-      ['const foo = 0xFfn', false],
-      ['const foo = 0xFf_Ffn', true],
-      ['const foo = 0xabn', false],
+      ['const foo = 0xff;', false],
+      ['const foo = 0Xff;', false],
+      ['const foo = 0xffffn;', false],
+      ['const foo = 0Xffffn;', false],
+      ['const foo = 0xFF;', false],
+      ['const foo = 0XFF;', false],
+      ['const foo = 0xFFFFn;', false],
+      ['const foo = 0XFFFFn;', false],
+      ['const foo = 0xff_ffn', false],
+      ['const foo = 0xFfn', true],
+      ['const foo = 0xFf_Ffn', false],
+      ['const foo = 0xabn', true],
     ])(
-      '%s should be valid with ignoreBigInt=%s',
-      async (testCase, ignoreBigInt) => {
+      '%s should be valid with checkBigInt=%s',
+      async (testCase, checkBigInt) => {
         expect.hasAssertions();
 
         const { result } = await valid({
           code: testCase,
           options: {
-            ignoreBigInt: ignoreBigInt,
+            checkBigInt: checkBigInt,
           },
         });
 
@@ -178,13 +178,13 @@ describe('hex-under/hex-under', () => {
   it.each([
     ['const foo = 0x100n;', 'const foo = 256n;'],
     ['const foo = 0X100n;', 'const foo = 256n;'],
-  ])('%s should fail with ignoreBigInt=false', async (testCase, output) => {
+  ])('%s should fail with checkBigInt=true', async (testCase, output) => {
     expect.hasAssertions();
 
     const { result } = await invalid({
       code: testCase,
       options: {
-        ignoreBigInt: false,
+        checkBigInt: true,
       },
       errors: 1,
     });
