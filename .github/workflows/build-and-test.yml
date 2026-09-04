@@ -80,7 +80,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [22, 24, 25, 26, "latest"]
+        node-version: [22, 24, 25, 26, 'latest']
         os: [ubuntu-latest, ubuntu-26.04-arm, macos-latest, windows-latest]
         include:
           - os: ubuntu-24.04-arm
@@ -103,10 +103,7 @@ jobs:
           restore-keys: |
             test-cache-${{ runner.os }}-
       - run: npm ci
-      - run: npm run test -- --coverage --logHeapUsage
-      - name: Report Coverage
-        if: always()
-        uses: davelosert/vitest-coverage-report-action@v2
+      - run: npm run test -- --logHeapUsage
   bats:
     name: Bats Tests
     needs:
