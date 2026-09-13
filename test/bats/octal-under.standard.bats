@@ -1,11 +1,11 @@
 #!/usr/bin/env bats
 
 setup() {
-  mkdir -p tmp
+  TMP_DIR="$(mktemp -d)"
 }
 
 teardown() {
-  rm -rf tmp
+  rm -rf "$TMP_DIR"
 }
 
 run_fixture() {
@@ -16,21 +16,24 @@ run_fixture() {
   fixture_name="${filename%.js}"
   expected="$BATS_TEST_DIRNAME/fixture/standard/${fixture_name}.fixed.js"
 
-  cp "$input" tmp/input.js
+  cp "$input" "$TMP_DIR/input.js"
 
-  run npx eslint --fix tmp/input.js --config test/bats/bats-eslint.config.js
+  run npx eslint \
+    --fix "$TMP_DIR/input.js" \
+    --config test/bats/bats-eslint.config.js
+
   if [ "$status" -ne 0 ]; then
     echo "ESLint failed for $fixture_name"
     echo "$output"
     return 1
   fi
 
-  diff -u tmp/input.js "$expected" || {
+  diff -u "$TMP_DIR/input.js" "$expected" || {
     echo -e "\nFixture failed: $fixture_name"
     echo -e "\nExpected:"
     cat "$expected"
     echo -e "\nGot:"
-    cat tmp/input.js
+    cat "$TMP_DIR/input.js"
     return 1
   }
 }
