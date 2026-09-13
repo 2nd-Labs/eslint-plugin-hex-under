@@ -1,6 +1,6 @@
 #!/usr/bin/env bats
 
-TMP_DIR="${TMP_DIR:-$BATS_TEST_DIRNAME/tmp}"
+TMP_DIR="${$BATS_TEST_DIRNAME/tmp}"
 
 setup() {
   mkdir -p "$TMP_DIR"
