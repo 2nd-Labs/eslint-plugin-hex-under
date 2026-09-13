@@ -23,18 +23,18 @@ This can lead to:
 
 The plugin provides three independent rules:
 
-| Rule | Format |	Default limit
-|---|---|---
-| hex-under/hex-under |	Hexadecimal |	0xff (255)
-| hex-under/binary-under |	Binary | 0b1111 (15)
-| hex-under/octal-under |	Octal |	0o777 (511)
+| Rule                   | Format      | Default limit |
+| ---------------------- | ----------- | ------------- |
+| hex-under/hex-under    | Hexadecimal | 0xff (255)    |
+| hex-under/binary-under | Binary      | 0b1111 (15)   |
+| hex-under/octal-under  | Octal       | 0o777 (511)   |
 
 The configured limit is inclusive.
 
 For example, with the default hexadecimal limit of 255:
 
 ```js
-const a = 0xff;  // OK: 255
+const a = 0xff; // OK: 255
 const b = 0x100; // Error: 256
 ```
 
@@ -60,18 +60,9 @@ export default [
       'hex-under': eslintPluginHexUnder,
     },
     rules: {
-      'hex-under/hex-under': [
-        'error',
-        { limit: 255, checkBigInt: true },
-      ],
-      'hex-under/octal-under': [
-        'error',
-        { limit: 511, checkBigInt: true },
-      ],
-      'hex-under/binary-under': [
-        'error',
-        { limit: 15, checkBigInt: true },
-      ],
+      'hex-under/hex-under': ['error', { limit: 255, checkBigInt: true }],
+      'hex-under/octal-under': ['error', { limit: 511, checkBigInt: true }],
+      'hex-under/binary-under': ['error', { limit: 15, checkBigInt: true }],
     },
   },
 ];
@@ -186,7 +177,7 @@ BigInt literals can optionally be checked using the checkBigInt option.
 By default:
 
 ```js
-checkBigInt: true
+checkBigInt: true;
 ```
 
 For example:
@@ -200,7 +191,7 @@ With checkBigInt: true, this literal is checked against the configured limit.
 If you don't want BigInt literals to be checked, set:
 
 ```js
-checkBigInt: false
+checkBigInt: false;
 ```
 
 For example:
@@ -225,20 +216,20 @@ const mask = 0xdead_beefn;
 
 ## Rules
 
-| Rule |	Description
-|---|---
-| hex-under/hex-under	| Limits hexadecimal numeric literals
-| hex-under/binary-under |	Limits binary numeric literals
-| hex-under/octal-under |	Limits octal numeric literals
+| Rule                   | Description                         |
+| ---------------------- | ----------------------------------- |
+| hex-under/hex-under    | Limits hexadecimal numeric literals |
+| hex-under/binary-under | Limits binary numeric literals      |
+| hex-under/octal-under  | Limits octal numeric literals       |
 
 Each rule can be configured independently.
 
 ## Options
 
-| Option | Type |	Default |	Description
-|---|---|---|---
-| limit |	number | Format-specific |	Maximum allowed numeric value
-|checkBigInt |	boolean |	true |	Whether BigInt literals should be checked
+| Option      | Type    | Default         | Description                               |
+| ----------- | ------- | --------------- | ----------------------------------------- |
+| limit       | number  | Format-specific | Maximum allowed numeric value             |
+| checkBigInt | boolean | true            | Whether BigInt literals should be checked |
 
 The limit is inclusive. A literal equal to the limit is valid; a literal greater than the limit is reported.
 
