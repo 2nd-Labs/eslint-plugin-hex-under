@@ -2,98 +2,171 @@
 
 [![CI](https://github.com/2nd-Labs/eslint-plugin-hex-under/actions/workflows/build-and-test.yml/badge.svg?branch=main)](https://github.com/2nd-Labs/eslint-plugin-hex-under/actions/workflows/build-and-test.yml)
 
-Enforce readability by limiting non-decimal numeric literals (hex, binary, octal) in JavaScript.
+An ESLint plugin that keeps hexadecimal, binary, and octal numeric literals readable by enforcing configurable value limits.
 
-Automatically converts large non-decimal literals into readable decimal values or reports them as errors.
+When a non-decimal numeric literal exceeds its configured limit, the rule reports an error and provides an automatic ESLint fix that converts the value to decimal.
 
 ## Why?
 
-Numeric literals like `0xfff` or `0b101010101` are compact, but often hard to read and reason about—especially for developers unfamiliar with bitwise operations.
+Non-decimal numeric literals such as 0xfff or 0b101010101 can be compact, but they are not always easy to read or reason about at a glance.
 
 This can lead to:
 
 - Reduced code readability
 - Slower code reviews
-- Hidden "magic numbers"
+- Hard-to-understand magic numbers
+- Unnecessary cognitive overhead when reading bitwise operations
 
-This plugin enforces limits to keep numeric literals understandable at a glance.
+`eslint-plugin-hex-under` lets you keep smaller, meaningful non-decimal literals while encouraging decimal notation for larger values.
 
-## hex-under
+## How it works
 
-This ESLint plugin ensures that numeric literals written in non-decimal formats (hexadecimal, binary, or octal) do not exceed a specified maximum value.
-By default, the limits are:
+The plugin provides three independent rules:
 
-- Hexadecimal: `0xff` (255)
-- Binary: `0b1111` (15)
-- Octal: `0o777` (511)
+| Rule | Format |	Default limit
+|---|---|---
+| hex-under/hex-under |	Hexadecimal |	0xff (255)
+| hex-under/binary-under |	Binary | 0b1111 (15)
+| hex-under/octal-under |	Octal |	0o777 (511)
 
-Values exceeding these limits are automatically converted to decimal.
+The configured limit is inclusive.
 
-## When should I use this?
+For example, with the default hexadecimal limit of 255:
 
-Use this plugin if:
+```js
+const a = 0xff;  // OK: 255
+const b = 0x100; // Error: 256
+```
 
-- You want to improve code readability in your codebase
-- Your team avoids hard-to-read numeric literals ("magic numbers")
-- You work with bitwise operations but want to keep them understandable
-- You review code where non-decimal formats are frequently used
+## Installation
+
+Requires ESLint v9+ with flat config.
+
+```bash
+npm install --save-dev eslint-plugin-hex-under
+```
+
+## Configuration
+
+Add the plugin to your eslint.config.js:
+
+```js
+import eslintPluginHexUnder from 'eslint-plugin-hex-under';
+
+export default [
+  {
+    files: ['**/*.js'],
+    plugins: {
+      'hex-under': eslintPluginHexUnder,
+    },
+    rules: {
+      'hex-under/hex-under': [
+        'error',
+        { limit: 255, checkBigInt: true },
+      ],
+      'hex-under/octal-under': [
+        'error',
+        { limit: 511, checkBigInt: true },
+      ],
+      'hex-under/binary-under': [
+        'error',
+        { limit: 15, checkBigInt: true },
+      ],
+    },
+  },
+];
+```
+
+You can enable only the formats you need.
+
+For example:
+
+```js
+rules: {
+  'hex-under/hex-under': ['error', { limit: 255 }],
+}
+```
 
 ### Examples
 
-#### valid with default limits
+Valid with default limits
 
 ```js
-const signal = 0xef; // OK: below default hex limit (255)
+const signal = 0xef; // 239
 
-let func = () => 0xab;
+const func = () => 0xab; // 171
 
 function add(a, b) {
-  return a + b + 0x1f;
+  return a + b + 0x1f; // 31
 }
 
-const binary = 0b1111;
+const binary = 0b1111; // 15
 
-const octal = 0o377;
+const octal = 0o377; // 255
+
+Invalid with default limits
+const signal = 0x21b; // 539
+
+const func = () => 0xabc; // 2748
+
+function add(a, b) {
+  return a + b + 0x100; // 256
+}
+
+const d = 0xaa_ffn;
+
+const binary = 0b1_0000_0000; // 256
+
+const octal = 0o1000; // 512
 ```
 
-#### Invalid with default limits
+### Auto-fix
+
+The rules are automatically fixable with ESLint's --fix option.
+
+For example:
 
 ```js
 const signal = 0x21b;
 
-let func = () => 0xabc;
+const func = () => 0xabc;
 
 function add(a, b) {
   return a + b + 0x100;
 }
-
-let d = 0xaa_ffn;
 
 const binary = 0b1_0000_0000;
 
 const octal = 0o1000;
 ```
 
-#### Auto-fixable
+Running:
+
+```bash
+eslint . --fix
+```
+
+converts the values to decimal:
 
 ```js
-// This can be transformed to:
 const signal = 539;
 
-let func = () => 2748;
+const func = () => 2748;
 
 function add(a, b) {
   return a + b + 256;
 }
-
-let d = 43775;
 
 const binary = 256;
 
 const octal = 512;
 ```
 
-#### Ignore with line comments
+The source code is not modified during normal linting. Conversion only happens when ESLint's auto-fix functionality is used.
+
+### Ignoring individual literals
+
+You can disable a rule for a specific line using ESLint's standard inline comments:
 
 ```js
 // eslint-disable-next-line hex-under/hex-under
@@ -106,76 +179,103 @@ const binTooBig = 0b1000_0000_0000;
 const octalTooBig = 0o777777;
 ```
 
-#### Ignore Bigint values
+### BigInt
+
+BigInt literals can optionally be checked using the checkBigInt option.
+
+By default:
 
 ```js
-// valid with { limit: 255, checkBigInt: false }
+checkBigInt: true
+```
+
+For example:
+
+```js
 const mask = 0xdead_beefn;
 ```
 
-## Integration
+With checkBigInt: true, this literal is checked against the configured limit.
 
-Requires ESLint v9+ (flat config)
-
-```sh
-npm install --save-dev eslint-plugin-hex-under
-```
+If you don't want BigInt literals to be checked, set:
 
 ```js
-// eslint.config.js
+checkBigInt: false
+```
 
-import eslintPluginHexUnder from 'eslint-plugin-hex-under';
+For example:
 
-export default [
-  {
-    files: ['*.js'],
-    plugins: {
-      'hex-under': eslintPluginHexUnder,
+```js
+rules: {
+  'hex-under/hex-under': [
+    'error',
+    {
+      limit: 255,
+      checkBigInt: false,
     },
-    rules: {
-      'hex-under/hex-under': ['error', { limit: 255, checkBigInt: true }],
-      'hex-under/octal-under': ['error', { limit: 511, checkBigInt: true }],
-      'hex-under/binary-under': ['error', { limit: 15, checkBigInt: true }],
-    },
-  },
-];
+  ],
+}
+```
+
+This allows:
+
+```js
+const mask = 0xdead_beefn;
 ```
 
 ## Rules
 
-| Rule                     | Description                 |
-| ------------------------ | --------------------------- |
-| `hex-under/hex-under`    | Limits hexadecimal literals |
-| `hex-under/binary-under` | Limits binary literals      |
-| `hex-under/octal-under`  | Limits octal literals       |
+| Rule |	Description
+|---|---
+| hex-under/hex-under	| Limits hexadecimal numeric literals
+| hex-under/binary-under |	Limits binary numeric literals
+| hex-under/octal-under |	Limits octal numeric literals
 
-## Configuration
+Each rule can be configured independently.
 
-| Option        | Type    | Default         | Description           |
-| ------------- | ------- | --------------- | --------------------- |
-| `limit`       | number  | format-specific | Maximum allowed value |
-| `checkBigInt` | boolean | true            | Check BigInt values   |
+## Options
+
+| Option | Type |	Default |	Description
+|---|---|---|---
+| limit |	number | Format-specific |	Maximum allowed numeric value
+|checkBigInt |	boolean |	true |	Whether BigInt literals should be checked
+
+The limit is inclusive. A literal equal to the limit is valid; a literal greater than the limit is reported.
 
 ## Testing & Code Coverage
 
-This project uses **Vitest** as its test runner with comprehensive code coverage tracking. All tests are written using Vitest's modern testing framework and ESLint's RuleTester for validating rule behavior.
-Additionally this project uses bats to test the `eslint --fix` command's output.
+This project uses Vitest as its test runner and ESLint's RuleTester for validating rule behavior.
 
-### Running Tests
+The project also uses bats to test the output of ESLint's --fix command.
 
-```sh
-# Run all tests once
+## Running tests
+
+### Run all tests:
+
+```bash
 npm run test:all
+```
 
-# Run vitest tests
+### Run Vitest:
+
+```bash
 npm run test
+```
 
-# Run tests in watch mode (for development)
+### Run Vitest in watch mode:
+
+```bash
 npm run test:watch
+```
 
-# Run tests with coverage report
+### Run tests with coverage:
+
+```bash
 npm run coverage
+```
 
-# Run bats tests
+### Run bats tests:
+
+```bash
 npm run test:bats
 ```
