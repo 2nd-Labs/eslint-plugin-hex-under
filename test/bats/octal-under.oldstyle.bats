@@ -1,21 +1,21 @@
 #!/usr/bin/env bats
 
 setup() {
-  TMPDIR=$(mktemp -d)
+  TMP_DIR="$(mktemp -d "$BATS_TEST_DIRNAME/.tmp.XXXXXX")"
 }
 
 teardown() {
-  rm -rf "$TMPDIR"
+  rm -rf "$TMP_DIR"
 }
 
 @test "ESLint ignores old octal literal" {
-  ORIGINAL_FILE="$TMPDIR/original.js"
+  ORIGINAL_FILE="$TMP_DIR/original.js"
   echo "const foo = 01000;" > "$ORIGINAL_FILE"
 
-  EXPECTED_FILE="$TMPDIR/expected.js"
+  EXPECTED_FILE="$TMP_DIR/expected.js"
   echo "const foo = 01000;" > "$EXPECTED_FILE"
 
-  FIXED_FILE="$TMPDIR/fixed.js"
+  FIXED_FILE="$TMP_DIR/fixed.js"
   run npx eslint "$ORIGINAL_FILE" \
     --rule "'hex-under/octal-under': 'error'" \
     --parser-options '{ "ecmaVersion": 2025, "sourceType": "script" }' \
