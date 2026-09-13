@@ -94,8 +94,11 @@ function add(a, b) {
 const binary = 0b1111; // 15
 
 const octal = 0o377; // 255
+```
 
 Invalid with default limits
+
+```js
 const signal = 0x21b; // 539
 
 const func = () => 0xabc; // 2748
