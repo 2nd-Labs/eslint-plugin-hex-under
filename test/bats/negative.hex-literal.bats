@@ -8,7 +8,7 @@ teardown() {
   rm -rf "$TMP_DIR"
 }
 
-@test "negativ: ungültiges Hex-Literal wird erkannt" {
+@test "negative: invalid Hex-Literal" {
   ORIGINAL_FILE="$TMP_DIR/original.js"
   echo "const foo = 0x1_2_3_;" > "$ORIGINAL_FILE"
 
