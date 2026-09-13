@@ -1,7 +1,7 @@
 #!/usr/bin/env bats
 
 setup() {
-  TMP_DIR="$(mktemp -d "$BATS_TEST_DIRNAME/.tmp.XX")"
+  TMP_DIR="$(mktemp -d "$BATS_TEST_DIRNAME/.tmp.XXXXXX")"
 }
 
 teardown() {
