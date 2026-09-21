@@ -1,0 +1,6 @@
+name: "CodeQL config"
+queries:
+  - uses: security-extended
+paths:
+  - src
+  - test
