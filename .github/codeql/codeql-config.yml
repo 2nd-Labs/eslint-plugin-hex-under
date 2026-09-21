@@ -1,6 +1,5 @@
-name: "CodeQL config"
+name: 'CodeQL config'
 queries:
-  - uses: security-extended
-paths:
-  - src
-  - test
+  - uses: security-and-quality
+paths-ignore:
+  - test/bats/fixture/**
