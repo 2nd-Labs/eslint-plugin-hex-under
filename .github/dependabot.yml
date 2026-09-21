@@ -8,12 +8,23 @@ updates:
       timezone: 'Europe/Berlin'
     open-pull-requests-limit: 5
     cooldown:
-      default-days: 4
+      default-days: 3
+    labels:
+      - 'dependencies'
+      - 'javascript'
+    commit-message:
+      prefix: 'chore'
+      include: 'scope'
     groups:
       vitest:
         patterns:
           - 'vitest'
           - '@vitest/coverage-istanbul'
+    development-tools:
+        dependency-type: 'development'
+        patterns:
+          - 'prettier'
+          - 'bats'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
