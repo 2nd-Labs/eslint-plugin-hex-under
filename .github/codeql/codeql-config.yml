@@ -4,4 +4,3 @@ queries:
 paths:
   - src
   - test
-  - *.config.js
