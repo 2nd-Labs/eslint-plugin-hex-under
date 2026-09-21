@@ -1,5 +1,8 @@
 name: Run CodeQL
 on:
+  schedule:
+    - cron: 30 2 * * *
+      timezone: Europe/Berlin
   push:
     branches: [main]
   pull_request:
