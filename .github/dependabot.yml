@@ -20,11 +20,6 @@ updates:
         patterns:
           - 'vitest'
           - '@vitest/coverage-istanbul'
-    development-tools:
-        dependency-type: 'development'
-        patterns:
-          - 'prettier'
-          - 'bats'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
