@@ -3,27 +3,11 @@ name: Build and Test
 on:
   push:
     branches: [main]
-
   pull_request:
-    branches: [main]
-    paths:
-      - 'src/**'
-      - 'package*.json'
-      - '.github/**/*.yml'
-      - 'test/**'
-      - 'fixture/**'
-      - '*.config.js'
-      - '.prettierrc'
-      - '.gitignore'
-      - '.npmignore'
 
 permissions:
   pull-requests: write
   checks: write
-
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
 
 jobs:
   prettier:
