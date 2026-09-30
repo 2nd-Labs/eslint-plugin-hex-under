@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   pull_request:
-  workflow_dispatch: 
+  workflow_dispatch:
 
 permissions:
   pull-requests: write
@@ -118,4 +118,4 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci
-      - run: npm run test:bats
+      - run: npm run test:bats -- --formatter tap
