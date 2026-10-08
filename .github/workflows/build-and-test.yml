@@ -1,128 +1,126 @@
-name: Build and Test
+name: 'Build and Test'
 
 on:
   push:
     branches:
-      - main
+      - 'main'
   pull_request:
   workflow_dispatch:
 
 permissions:
-  pull-requests: write
-  checks: write
+  pull-requests: 'write'
+  checks: 'write'
 
 jobs:
   format:
-    if: ${{ github.event_name == 'pull_request' }}
-    runs-on: ubuntu-latest
+    if: "${{ github.event_name == 'pull_request' }}"
+    runs-on: 'ubuntu-latest'
     continue-on-error: true
     steps:
-      - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - name: 'Checkout'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' # v7
+      - name: 'Setup Node'
+        uses: 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' # v7
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Format check
-        run: npm run format
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      - name: 'Install dependencies'
+        run: 'npm ci'
+      - name: 'Format check'
+        run: 'npm run format'
   audit:
-    runs-on: ubuntu-slim
+    runs-on: 'ubuntu-slim'
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Setup Node
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - name: 'Checkout Repository'
+        uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' # v7
+      - name: 'Setup Node'
+        uses: 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' # v7
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Security check
-        run: npm audit --audit-level=high
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      - name: 'Install dependencies'
+        run: 'npm ci'
+      - name: 'Security check'
+        run: 'npm audit --audit-level=high'
   lint:
-    name: Linting
-    runs-on: ubuntu-slim
+    name: 'Linting'
+    runs-on: 'ubuntu-slim'
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' # v7
+      - uses: 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' # v7
         with:
           node-version: 24
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - name: Cache ESLint
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      - name: 'Cache ESLint'
+        uses: 'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9' # v6
         with:
-          path: .eslintcache
-          key: eslint-${{ runner.os }}-${{ hashFiles('**/*.js') }}
-          restore-keys: |
-            eslint-${{ runner.os }}-
-      - run: npm ci
-      - run: npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache
+          path: '.eslintcache'
+          key: "eslint-${{ runner.os }}-${{ hashFiles('**/*.js') }}"
+          restore-keys: "eslint-${{ runner.os }}-\n"
+      - run: 'npm ci'
+      - run: "npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache"
         continue-on-error: true
   test:
-    name: Testing
+    name: 'Testing'
     needs:
-      - audit
-      - lint
+      - 'audit'
+      - 'lint'
     strategy:
       fail-fast: true
       matrix:
-        node-version: [22, 24, 25, 26, latest]
+        node-version: [22, 24, 25, 26, 'latest']
         os:
           [
-            ubuntu-latest,
-            ubuntu-24.04,
-            ubuntu-26.04,
-            ubuntu-24.04-arm,
-            ubuntu-26.04-arm,
-            macos-15,
-            macos-26,
-            macos-15-intel,
-            macos-26-intel,
-            macos-latest,
-            windows-11-arm,
-            windows-2025,
-            windows-latest,
+            'ubuntu-latest',
+            'ubuntu-24.04',
+            'ubuntu-26.04',
+            'ubuntu-24.04-arm',
+            'ubuntu-26.04-arm',
+            'macos-15',
+            'macos-26',
+            'macos-15-intel',
+            'macos-26-intel',
+            'macos-latest',
+            'windows-11-arm',
+            'windows-2025',
+            'windows-latest',
           ]
         include:
-          - os: ubuntu-24.04-arm
+          - os: 'ubuntu-24.04-arm'
             node-version: 24
-    runs-on: ${{ matrix.os }}
+    runs-on: '${{ matrix.os }}'
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' # v7
+      - uses: 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' # v7
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - name: Cache Vitest + Vite
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6
+          node-version: '${{ matrix.node-version }}'
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      - name: 'Cache Vitest + Vite'
+        uses: 'actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9' # v6
         with:
-          path: |
-            node_modules/.vitest
-            node_modules/.vite
-          key: test-cache-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json', 'src/**/*.js', 'test/**/*.js') }}
-          restore-keys: |
-            test-cache-${{ runner.os }}-
-      - run: npm ci
-      - run: npm run test -- --logHeapUsage
+          path: "node_modules/.vitest
+
+            node_modules/.vite\n"
+          key: "test-cache-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json', 'src/**/*.js', 'test/**/*.js') }}"
+          restore-keys: "test-cache-${{ runner.os }}-\n"
+      - run: 'npm ci'
+      - run: 'npm run test -- --logHeapUsage'
   bats:
-    name: Bats Tests
+    name: 'Bats Tests'
     needs:
-      - audit
-      - lint
-    runs-on: ubuntu-slim
+      - 'audit'
+      - 'lint'
+    runs-on: 'ubuntu-slim'
     steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+      - uses: 'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1' # v7
+      - uses: 'actions/setup-node@820762786026740c76f36085b0efc47a31fe5020' # v7
         with:
           node-version: 26
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - run: npm ci
-      - run: npm run test:bats -- --formatter tap
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
+      - run: 'npm ci'
+      - run: 'npm run test:bats -- --formatter tap'
