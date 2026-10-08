@@ -2,7 +2,8 @@ name: Build and Test
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
   pull_request:
   workflow_dispatch:
 
@@ -11,17 +12,23 @@ permissions:
   checks: write
 
 jobs:
-  prettier:
+  format:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     continue-on-error: true
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Prettify code
-        uses: creyD/prettier_action@8c18391fdc98ed0d884c6345f03975edac71b8f0 # v4.6
+      - name: Setup Node
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
         with:
-          dry: true
+          node-version: 24
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Format check
+        run: npm run format
   audit:
     runs-on: ubuntu-slim
     steps:
@@ -65,7 +72,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [22, 24, 25, 26, 'latest']
+        node-version: [22, 24, 25, 26, latest]
         os:
           [
             ubuntu-latest,

@@ -1,32 +1,32 @@
 version: 2
 updates:
-  - package-ecosystem: 'npm'
-    directory: '/'
+  - package-ecosystem: npm
+    directory: /
     schedule:
-      interval: 'daily'
-      time: '09:00'
-      timezone: 'Europe/Berlin'
+      interval: daily
+      time: 09:00
+      timezone: Europe/Berlin
     open-pull-requests-limit: 5
     cooldown:
       default-days: 2
     labels:
-      - 'dependencies'
-      - 'javascript'
+      - dependencies
+      - javascript
     commit-message:
-      prefix: 'chore'
-      include: 'scope'
+      prefix: chore
+      include: scope
     groups:
       vitest:
         patterns:
-          - 'vitest'
+          - vitest
           - '@vitest/coverage-istanbul'
-  - package-ecosystem: 'github-actions'
-    directory: '/'
+  - package-ecosystem: github-actions
+    directory: /
     schedule:
-      interval: 'daily'
-      time: '09:05'
-      timezone: 'Europe/Berlin'
+      interval: daily
+      time: 09:05
+      timezone: Europe/Berlin
     open-pull-requests-limit: 10
     labels:
-      - 'dependencies'
-      - 'github_actions'
+      - dependencies
+      - github_actions
