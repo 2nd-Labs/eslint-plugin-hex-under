@@ -2,7 +2,9 @@ name: 'Assign PR and Reviewer'
 
 on:
   pull_request:
-    types: ['opened']
+    types:
+      - 'opened'
+      - 'synchronize'
 
 permissions:
   pull-requests: 'write'
@@ -17,18 +19,13 @@ jobs:
           PR_NUMBER: '${{ github.event.pull_request.number }}'
           PR_AUTHOR: '${{ github.event.pull_request.user.login }}'
           REPO: '${{ github.repository }}'
-        run: "gh pr edit \"$PR_NUMBER\" \\
-
-          \  --repo \"$REPO\" \\
-
-          \  --add-assignee 0xflotus
-
-          if [ \"$PR_AUTHOR\" != \"0xflotus\" ]; then
-
-          \  gh pr edit \"$PR_NUMBER\" \\
-
-          \    --repo \"$REPO\" \\
-
-          \    --add-reviewer 0xflotus
-
-          fi\n"
+        # prettier-ignore
+        run: |
+          gh pr edit $PR_NUMBER \
+            --repo $REPO \
+            --add-assignee 0xflotus
+          if [ $PR_AUTHOR != "0xflotus" ]; then
+            gh pr edit $PR_NUMBER \
+            --repo $REPO \
+            --add-reviewer 0xflotus
+          fi
