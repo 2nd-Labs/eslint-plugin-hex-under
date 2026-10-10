@@ -47,7 +47,7 @@
   "scripts": {
     "coverage": "vitest run --coverage",
     "format": "prettier . --check",
-    "lint": "eslint src --config eslint.config.js",
+    "lint": "eslint src test --config eslint.config.js",
     "prelint": "npm run format",
     "test": "vitest run",
     "test:all": "npm run test && npm run test:bats",
