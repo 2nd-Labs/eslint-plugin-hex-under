@@ -2,7 +2,54 @@ import { createRuleTester } from 'eslint-vitest-rule-tester';
 import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/octal-under.js';
 
+function expectRuleError(result, code, output, limit) {
+  const raw = code.match(/0[oO][0-7_]+n?/)?.[0];
+  const value = output.match(/=\s*-?(\d+)n?/)?.[1];
+
+  expect(result.messages).toHaveLength(1);
+  expect(result.messages[0]).toMatchObject({
+    messageId: 'valueOver',
+    message: `Octal number ${raw} (${value}) exceeds the limit of ${limit}.`,
+  });
+}
+
 describe('hex-under/octal-under', () => {
+  it('defines the rule defaults, option schema, and diagnostic', () => {
+    expect.assertions(1);
+
+    expect(rule.meta).toMatchObject({
+      docs: {
+        description: 'Ensures octal numbers do not exceed a limit.',
+        recommended: false,
+      },
+      languages: ['js/js'],
+      fixable: 'code',
+      defaultOptions: [{ limit: 511, checkBigInt: true }],
+      schema: [
+        {
+          type: 'object',
+          properties: {
+            limit: {
+              type: 'integer',
+              minimum: 0,
+              description: 'The maximum allowed value for octal literals.',
+            },
+            checkBigInt: {
+              type: 'boolean',
+              description: 'Whether to check BigInt literals.',
+            },
+          },
+          description: 'Options for octal-under rule',
+          additionalProperties: false,
+        },
+      ],
+      messages: {
+        valueOver:
+          'Octal number {{ raw }} ({{ value }}) exceeds the limit of {{ limit }}.',
+      },
+    });
+  });
+
   const { valid, invalid } = createRuleTester({
     name: 'hex-under/octal-under',
     rule,
@@ -37,6 +84,7 @@ describe('hex-under/octal-under', () => {
         code: testCase,
       });
 
+      expect(result.messages).toHaveLength(0);
       expect(result.output).toBe(testCase);
       expect(result.fixed).toBe(false);
     });
@@ -59,6 +107,9 @@ describe('hex-under/octal-under', () => {
         errors: 1,
       });
 
+      expectRuleError(result, testCase, output, 511);
+
+      expect(result.messages[0].fix).toBeDefined();
       expect(result.output).toBe(output);
       expect(result.fixed).toBe(true);
     });
@@ -87,6 +138,7 @@ describe('hex-under/octal-under', () => {
         code: testCase,
       });
 
+      expect(result.messages).toHaveLength(0);
       expect(result.output).toBe(testCase);
       expect(result.fixed).toBe(false);
     });
@@ -109,6 +161,7 @@ describe('hex-under/octal-under', () => {
         },
       });
 
+      expect(result.messages).toHaveLength(0);
       expect(result.output).toBe(testCase);
       expect(result.fixed).toBe(false);
     });
@@ -129,6 +182,9 @@ describe('hex-under/octal-under', () => {
         errors: 1,
       });
 
+      expectRuleError(result, testCase, output, limit);
+
+      expect(result.messages[0].fix).toBeDefined();
       expect(result.output).toBe(output);
       expect(result.fixed).toBe(true);
     });
@@ -152,6 +208,7 @@ describe('hex-under/octal-under', () => {
           },
         });
 
+        expect(result.messages).toHaveLength(0);
         expect(result.output).toBe(testCase);
         expect(result.fixed).toBe(false);
       },
@@ -173,6 +230,9 @@ describe('hex-under/octal-under', () => {
           errors: 1,
         });
 
+        expectRuleError(result, testCase, output, 511);
+
+        expect(result.messages[0].fix).toBeDefined();
         expect(result.output).toBe(output);
         expect(result.fixed).toBe(true);
       },

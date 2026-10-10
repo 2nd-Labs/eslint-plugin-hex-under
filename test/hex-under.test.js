@@ -2,7 +2,56 @@ import { createRuleTester } from 'eslint-vitest-rule-tester';
 import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/hex-under.js';
 
+function expectRuleError(result, code, output, limit) {
+  const raw = code.match(/0[xX][0-9a-fA-F_]+n?/)?.[0];
+  const value = output.match(/=\s*-?(\d+)n?/)?.[1];
+
+  expect(result.messages).toHaveLength(1);
+  expect(result.messages[0]).toMatchObject({
+    messageId: 'valueOver',
+    message: `Hex number ${raw} (${value}) exceeds the limit of ${limit}.`,
+  });
+}
+
 describe('hex-under/hex-under', () => {
+  it('defines the rule defaults, option schema, and diagnostic', () => {
+    expect.assertions(1);
+
+    expect(rule.meta).toMatchObject({
+      docs: {
+        description:
+          'Ensures that a hexadecimal number does not exceed a specified value (default: 255).',
+        recommended: false,
+      },
+      languages: ['js/js'],
+      fixable: 'code',
+      defaultOptions: [{ limit: 255, checkBigInt: true }],
+      schema: [
+        {
+          type: 'object',
+          properties: {
+            limit: {
+              type: 'integer',
+              minimum: 0,
+              description:
+                'The maximum allowed value for hexadecimal literals.',
+            },
+            checkBigInt: {
+              type: 'boolean',
+              description: 'Whether to check BigInt literals.',
+            },
+          },
+          description: 'Options for hex-under rule',
+          additionalProperties: false,
+        },
+      ],
+      messages: {
+        valueOver:
+          'Hex number {{ raw }} ({{ value }}) exceeds the limit of {{ limit }}.',
+      },
+    });
+  });
+
   const { valid, invalid } = createRuleTester({
     name: 'hex-under/hex-under',
     rule,
@@ -49,6 +98,7 @@ describe('hex-under/hex-under', () => {
         code: testCase,
       });
 
+      expect(result.messages).toHaveLength(0);
       expect(result.output).toBe(testCase);
       expect(result.fixed).toBe(false);
     });
@@ -63,6 +113,9 @@ describe('hex-under/hex-under', () => {
           errors: 1,
         });
 
+        expectRuleError(result, testCase, 'const foo = 256;', 255);
+
+        expect(result.messages[0].fix).toBeDefined();
         expect(result.output).toBe('const foo = 256;');
         expect(result.fixed).toBe(true);
       },
@@ -78,6 +131,9 @@ describe('hex-under/hex-under', () => {
           errors: 1,
         });
 
+        expectRuleError(result, testCase, 'const foo = 256n;', 255);
+
+        expect(result.messages[0].fix).toBeDefined();
         expect(result.output).toBe('const foo = 256n;');
         expect(result.fixed).toBe(true);
       },
@@ -91,6 +147,10 @@ describe('hex-under/hex-under', () => {
         errors: 2,
       });
 
+      expect(result.messages.map(({ message }) => message)).toStrictEqual([
+        'Hex number 0X100n (256) exceeds the limit of 255.',
+        'Hex number 0x100 (256) exceeds the limit of 255.',
+      ]);
       expect(result.output).toBe('const foo = -256n;\nconst bar = -256;');
       expect(result.fixed).toBe(true);
     });
@@ -117,6 +177,7 @@ describe('hex-under/hex-under', () => {
         },
       });
 
+      expect(result.messages).toHaveLength(0);
       expect(result.output).toBe(testCase);
       expect(result.fixed).toBe(false);
     });
@@ -138,6 +199,9 @@ describe('hex-under/hex-under', () => {
         errors: 1,
       });
 
+      expectRuleError(result, testCase, output, limit);
+
+      expect(result.messages[0].fix).toBeDefined();
       expect(result.output).toBe(output);
       expect(result.fixed).toBe(true);
     });
@@ -169,6 +233,7 @@ describe('hex-under/hex-under', () => {
           },
         });
 
+        expect(result.messages).toHaveLength(0);
         expect(result.output).toBe(testCase);
         expect(result.fixed).toBe(false);
       },
@@ -189,6 +254,9 @@ describe('hex-under/hex-under', () => {
       errors: 1,
     });
 
+    expectRuleError(result, testCase, output, 255);
+
+    expect(result.messages[0].fix).toBeDefined();
     expect(result.output).toBe(output);
     expect(result.fixed).toBe(true);
   });

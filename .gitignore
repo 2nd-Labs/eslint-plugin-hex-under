@@ -1,4 +1,5 @@
 node_modules
 coverage
+reports/mutation
 .nyc_output
 .tmp.*

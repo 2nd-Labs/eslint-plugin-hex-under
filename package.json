@@ -6,6 +6,8 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@eslint/json": "2.1.1",
+    "@stryker-mutator/core": "10.0.0",
+    "@stryker-mutator/vitest-runner": "10.0.0",
     "@vitest/coverage-istanbul": "5.0.3",
     "@vitest/eslint-plugin": "1.6.27",
     "bats": "1.13.0",
@@ -45,11 +47,12 @@
   "scripts": {
     "coverage": "vitest run --coverage",
     "format": "prettier . --check",
-    "lint": "eslint src --config eslint.config.js",
+    "lint": "eslint src test --config eslint.config.js",
     "prelint": "npm run format",
     "test": "vitest run",
     "test:all": "npm run test && npm run test:bats",
     "test:bats": "bats --print-output-on-failure --abort --verbose-run test/bats/*.bats",
+    "test:mutation": "stryker run",
     "test:watch": "vitest"
   }
 }

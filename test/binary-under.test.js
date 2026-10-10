@@ -2,7 +2,54 @@ import { createRuleTester } from 'eslint-vitest-rule-tester';
 import { describe, expect, it } from 'vitest';
 import rule from '../src/rules/binary-under.js';
 
+function expectRuleError(result, code, output, limit) {
+  const raw = code.match(/0[bB][01_]+n?/)?.[0];
+  const value = output.match(/=\s*-?(\d+)n?/)?.[1];
+
+  expect(result.messages).toHaveLength(1);
+  expect(result.messages[0]).toMatchObject({
+    messageId: 'valueOver',
+    message: `Binary number ${raw} (${value}) exceeds the limit of ${limit}.`,
+  });
+}
+
 describe('hex-under/binary-under', () => {
+  it('defines the rule defaults, option schema, and diagnostic', () => {
+    expect.assertions(1);
+
+    expect(rule.meta).toMatchObject({
+      docs: {
+        description: 'Ensures binary numbers do not exceed a limit.',
+        recommended: false,
+      },
+      languages: ['js/js'],
+      fixable: 'code',
+      defaultOptions: [{ limit: 15, checkBigInt: true }],
+      schema: [
+        {
+          type: 'object',
+          properties: {
+            limit: {
+              type: 'integer',
+              minimum: 0,
+              description: 'The maximum allowed value for binary literals.',
+            },
+            checkBigInt: {
+              type: 'boolean',
+              description: 'Whether to check BigInt literals.',
+            },
+          },
+          description: 'Options for binary-under rule',
+          additionalProperties: false,
+        },
+      ],
+      messages: {
+        valueOver:
+          'Binary number {{ raw }} ({{ value }}) exceeds the limit of {{ limit }}.',
+      },
+    });
+  });
+
   const { valid, invalid } = createRuleTester({
     name: 'hex-under/binary-under',
     rule,
@@ -39,6 +86,7 @@ describe('hex-under/binary-under', () => {
         code: testCase,
       });
 
+      expect(result.messages).toHaveLength(0);
       expect(result.output).toBe(testCase);
       expect(result.fixed).toBe(false);
     });
@@ -61,6 +109,9 @@ describe('hex-under/binary-under', () => {
         errors: 1,
       });
 
+      expectRuleError(result, testCase, output, 15);
+
+      expect(result.messages[0].fix).toBeDefined();
       expect(result.output).toBe(output);
       expect(result.fixed).toBe(true);
     });
@@ -84,6 +135,7 @@ describe('hex-under/binary-under', () => {
         },
       });
 
+      expect(result.messages).toHaveLength(0);
       expect(result.output).toBe(testCase);
       expect(result.fixed).toBe(false);
     });
@@ -104,6 +156,9 @@ describe('hex-under/binary-under', () => {
         errors: 1,
       });
 
+      expectRuleError(result, testCase, output, limit);
+
+      expect(result.messages[0].fix).toBeDefined();
       expect(result.output).toBe(output);
       expect(result.fixed).toBe(true);
     });
@@ -127,6 +182,7 @@ describe('hex-under/binary-under', () => {
           },
         });
 
+        expect(result.messages).toHaveLength(0);
         expect(result.output).toBe(testCase);
         expect(result.fixed).toBe(false);
       },
@@ -148,6 +204,9 @@ describe('hex-under/binary-under', () => {
           errors: 1,
         });
 
+        expectRuleError(result, testCase, output, 15);
+
+        expect(result.messages[0].fix).toBeDefined();
         expect(result.output).toBe(output);
         expect(result.fixed).toBe(true);
       },

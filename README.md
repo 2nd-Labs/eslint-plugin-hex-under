@@ -268,6 +268,14 @@ npm run test:watch
 npm run coverage
 ```
 
+### Run mutation tests:
+
+```bash
+npm run test:mutation
+```
+
+Mutation testing uses Stryker with Vitest and mutates the ESLint rules in `src/rules/`. The HTML report is written to `reports/mutation/`.
+
 ### Run bats tests:
 
 ```bash
