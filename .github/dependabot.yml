@@ -20,6 +20,9 @@ updates:
         patterns:
           - 'vitest'
           - '@vitest/coverage-istanbul'
+      stryker:
+        patterns:
+          - '@stryker-mutator/*'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:
