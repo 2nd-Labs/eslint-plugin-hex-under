@@ -26,7 +26,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
       - name: 'Install dependencies'
-        run: 'npm ci'
+        run: 'npm clean-install'
       - name: 'Format check'
         run: 'npm run format'
   audit:
@@ -41,7 +41,7 @@ jobs:
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
       - name: 'Install dependencies'
-        run: 'npm ci'
+        run: 'npm clean-install'
       - name: 'Security check'
         run: 'npm audit --audit-level=high'
   lint:
@@ -60,7 +60,7 @@ jobs:
           path: '.eslintcache'
           key: "eslint-${{ runner.os }}-${{ hashFiles('**/*.js') }}"
           restore-keys: "eslint-${{ runner.os }}-\n"
-      - run: 'npm ci'
+      - run: 'npm clean-install'
       - run: "npm run lint -- --ignore-pattern 'test/bats/fixture/**/*.js' --cache"
         continue-on-error: true
   test:
@@ -107,7 +107,7 @@ jobs:
             node_modules/.vite\n"
           key: "test-cache-${{ matrix.os }}-${{ matrix.node-version }}-${{ hashFiles('package-lock.json', 'src/**/*.js', 'test/**/*.js') }}"
           restore-keys: "test-cache-${{ runner.os }}-\n"
-      - run: 'npm ci'
+      - run: 'npm clean-install'
       - run: 'npm run test -- --logHeapUsage'
   bats:
     name: 'Bats Tests'
@@ -122,7 +122,7 @@ jobs:
           node-version: 26
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
-      - run: 'npm ci'
+      - run: 'npm clean-install'
       - run: 'npm run test:bats -- --formatter tap'
   mutation:
     name: 'Mutation Testing'
@@ -137,5 +137,5 @@ jobs:
           node-version: 26
           cache: 'npm'
           cache-dependency-path: 'package-lock.json'
-      - run: 'npm ci'
+      - run: 'npm clean-install'
       - run: 'npm run test:mutation'
