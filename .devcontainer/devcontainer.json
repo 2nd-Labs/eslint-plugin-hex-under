@@ -1,6 +1,6 @@
 {
   "name": "eslint-plugin-hex-under",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:24.22.1",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:26.12.1",
   "features": {
     "ghcr.io/devcontainers/features/git:1": {}
   },
