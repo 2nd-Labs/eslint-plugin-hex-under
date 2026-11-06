@@ -1,7 +1,10 @@
 {
   "name": "eslint-plugin-hex-under",
-  "image": "mcr.microsoft.com/devcontainers/javascript-node:26.13.0",
+  "image": "mcr.microsoft.com/devcontainers/base:trixie",
   "features": {
+    "ghcr.io/devcontainers/features/node:2": {
+      "version": "26.13.0"
+    },
     "ghcr.io/devcontainers/features/git:1": {}
   },
   "postCreateCommand": "npm clean-install",
