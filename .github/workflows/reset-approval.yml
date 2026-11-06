@@ -17,68 +17,40 @@ jobs:
       - name: 'Dismiss all approvals'
         uses: 'actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3' # v9.0.0
         with:
-          script: "const { owner, repo } = context.repo;
-
+          script: |
+            const { owner, repo } = context.repo;
             const pull_number = context.issue.number;
 
-
             // Get all reviews of the pull request
-
             const reviews = await github.paginate(
-
-            \  github.rest.pulls.listReviews,
-
-            \  {
-
-            \    owner,
-
-            \    repo,
-
-            \    pull_number
-
-            \  }
-
+              github.rest.pulls.listReviews,
+              {
+                owner,
+                repo,
+                pull_number
+              }
             );
-
 
             // Find all approved reviews
-
             const approvals = reviews.filter(
-
-            \  review => review.state === 'APPROVED'
-
+              review => review.state === 'APPROVED'
             );
-
 
             console.log(`Found ${approvals.length} approvals.`);
 
-
             // Dismiss all approvals
-
             for (const review of approvals) {
+              console.log(
+                `Dismissing approval from ${review.user.login}`
+              );
 
-            \  console.log(
-
-            \    `Dismissing approval from ${review.user.login}`
-
-            \  );
-
-
-            \  await github.rest.pulls.dismissReview({
-
-            \    owner,
-
-            \    repo,
-
-            \    pull_number,
-
-            \    review_id: review.id,
-
-            \    message: 'Approval dismissed because new commits were pushed.'
-
-            \  });
-
+              await github.rest.pulls.dismissReview({
+                owner,
+                repo,
+                pull_number,
+                review_id: review.id,
+                message: 'Approval dismissed because new commits were pushed.'
+              });
             }
 
-
-            console.log('All approvals have been dismissed.');\n"
+            console.log('All approvals have been dismissed.');
