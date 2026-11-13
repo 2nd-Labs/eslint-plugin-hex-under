@@ -29,8 +29,6 @@ jobs:
         run: 'npm clean-install'
       - name: 'Format check'
         run: 'npm run format'
-      - name: 'Format dry-run'
-        run: 'npx prettier . --write --dry-run'
   audit:
     runs-on: 'ubuntu-slim'
     steps:
@@ -73,7 +71,17 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: [22, 24, 25, 26, '27-nightly', 'current', 'lts/*', 'latest']
+        node-version: 
+          [
+            22, 
+            24, 
+            25, 
+            26, 
+            '27-nightly', 
+            'current', 
+            'lts/*', 
+            'latest'
+          ]
         os:
           [
             'ubuntu-latest',
