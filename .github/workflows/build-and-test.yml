@@ -71,17 +71,8 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        node-version: 
-          [
-            22, 
-            24, 
-            25, 
-            26, 
-            '27-nightly', 
-            'current', 
-            'lts/*', 
-            'latest'
-          ]
+        node-version:
+          [22, 24, 25, 26, '27-nightly', 'current', 'lts/*', 'latest']
         os:
           [
             'ubuntu-latest',
