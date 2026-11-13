@@ -48,7 +48,6 @@
     "coverage": "vitest run --coverage",
     "format": "prettier . --check",
     "lint": "eslint src test --config eslint.config.js",
-    "prelint": "npm run format",
     "test": "vitest run",
     "test:all": "npm run test && npm run test:bats",
     "test:bats": "bats --print-output-on-failure --abort --verbose-run test/bats/*.bats",
