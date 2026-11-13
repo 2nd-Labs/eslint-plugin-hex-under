@@ -29,6 +29,8 @@ jobs:
         run: 'npm clean-install'
       - name: 'Format check'
         run: 'npm run format'
+      - name: 'Format dry-run'
+        run: 'npx prettier . --write --dry-run'
   audit:
     runs-on: 'ubuntu-slim'
     steps:
